@@ -12,9 +12,12 @@
 try{const t=localStorage.getItem('atlas-theme');if(t==='dark')document.documentElement.dataset.theme='dark';else if(!t&&matchMedia('(prefers-color-scheme: dark)').matches)document.documentElement.dataset.theme='dark'}catch(e){}
 </script>
 <style>
+@font-face{font-family:'Source Serif 4';src:url('assets/fonts/SourceSerif4-600.woff2') format('woff2');font-weight:600;font-style:normal;font-display:swap}
+@font-face{font-family:'Source Serif 4';src:url('assets/fonts/SourceSerif4-700.woff2') format('woff2');font-weight:700;font-style:normal;font-display:swap}
+
 /* ---------- Design tokens ---------- */
 :root{
-  --bg:#f3f5f7; --paper:#ffffff; --paper-2:#f1f5f7; --ink:#162832; --muted:#586975;
+  --bg:#f3f5f7; --paper:#ffffff; --paper-2:#f1f5f7; --ink:#162832; --ink-2:#3d5260; --muted:#586975;
   --line:#dce3e7; --line-soft:#edf1f4; --line-2:#b9c9d2;
   --accent:#c7f36b; --accent-deep:#5b8c1e; --accent-ink:#213916;
   --dark:#10232d; --dark-2:#2a414c;
@@ -23,16 +26,18 @@ try{const t=localStorage.getItem('atlas-theme');if(t==='dark')document.documentE
   --ok:#3f8f4f; --bad:#c0534f;
   --shadow:0 1px 2px rgba(16,35,45,.05),0 6px 18px rgba(16,35,45,.05);
   --radius:12px;
+  --fs-0:13px; --fs-1:15px; --fs-2:16px; --fs-3:clamp(27px,2.6vw,38px);
+  --serif:'Source Serif 4',Georgia,serif;
 }
 [data-theme="dark"]{
-  --bg:#0d171d; --paper:#15242d; --paper-2:#1a2c36; --ink:#e3edf2; --muted:#93a7b1;
+  --bg:#0d171d; --paper:#15242d; --paper-2:#1a2c36; --ink:#e3edf2; --ink-2:#b7c9d2; --muted:#93a7b1;
   --line:#243945; --line-soft:#1d303b; --line-2:#33505e;
   --accent:#c7f36b; --accent-deep:#a3d94e; --accent-ink:#c7f36b;
   --dark:#0a141a; --dark-2:#1c313c;
   --tint:#22331c; --tint-ink:#d6f3a1; --hover:#1c2f3a;
   --wire:#3d5866; --dot:#21333d; --focus:#7dabf5; --ring:#c7f36b1f;
   --ok:#6cc07e; --bad:#e0827e;
-  --shadow:0 1px 2px rgba(0,0,0,.35),0 8px 22px rgba(0,0,0,.28);
+  --shadow:none;
 }
 /* Group colors (light + dark variants) */
 [data-group="foundations"]{--group:#2864c5}
@@ -53,17 +58,21 @@ try{const t=localStorage.getItem('atlas-theme');if(t==='dark')document.documentE
 /* ---------- Base ---------- */
 *{box-sizing:border-box}
 html{scroll-behavior:smooth}
-body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.55 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;transition:background-color .25s,color .25s}
+body{margin:0;background:var(--bg);color:var(--ink);font:var(--fs-1)/1.6 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;transition:background-color .25s,color .25s}
 button,input,select{font:inherit}
 button,a,input,select,summary{-webkit-tap-highlight-color:transparent}
 button{cursor:pointer;color:inherit;border:0}
 a{color:#2864c5;text-underline-offset:3px}
 [data-theme="dark"] a{color:#8fb6f5}
 button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,summary:focus-visible{outline:3px solid var(--focus);outline-offset:3px}
+.node:focus-visible,.term:focus-visible,.tab:focus-visible{outline:3px solid var(--focus);outline-offset:2px}
 body,.panel,.map-card,.detail,.node,.term,.tab,.flow-choice,aside,header,.quiz-opt{transition:background-color .25s,border-color .25s,color .25s}
 .skip{position:absolute;top:-100px;left:20px;z-index:50;background:var(--paper);color:var(--ink);padding:12px;border-radius:0 0 8px 8px}
 .skip:focus{top:0}
 ::selection{background:var(--accent);color:var(--accent-ink)}
+h1,.map-top h2,.detail h2,.center,.section-lead h2,.path-step h3,.flow-content h3,.compare-card h3,.quiz-start h3{font-family:var(--serif);font-weight:650}
+.gicon{width:14px;height:14px;display:inline-flex;flex-shrink:0;color:var(--group,currentColor);vertical-align:middle}
+.gicon use{pointer-events:none}
 
 /* ---------- Header ---------- */
 header{height:70px;background:var(--dark);color:#fff;display:flex;align-items:center;justify-content:space-between;padding:0 32px;gap:18px}
@@ -99,6 +108,11 @@ aside{background:var(--paper);border-right:1px solid var(--line);padding:24px 16
 .cat-title{display:flex;gap:8px;align-items:center}
 .cat-count{font:11px ui-monospace,Menlo,monospace;color:var(--muted);font-weight:400}
 .dot{height:7px;width:7px;background:var(--group);border-radius:50%;display:inline-block;flex-shrink:0}
+.cat-title .gicon{color:var(--group)}
+.filter-chips{display:flex;gap:6px;flex-wrap:wrap;margin:0 0 14px}
+.filter-chips button{background:var(--paper-2);border:1px solid var(--line);border-radius:7px;padding:6px 11px;font-size:12px;font-weight:600;color:var(--ink-2)}
+.filter-chips button:hover{background:var(--hover)}
+.filter-chips button.active{background:var(--tint);border-color:color-mix(in srgb,var(--accent-deep) 35%,var(--line));color:var(--tint-ink)}
 .term{background:transparent;width:100%;text-align:left;padding:7px 10px 7px 23px;font-size:14px;border-radius:6px;color:var(--muted);display:flex;align-items:center;justify-content:space-between;gap:8px;line-height:1.4}
 .term:hover{background:var(--hover);color:var(--ink)}
 .term.active{background:var(--tint);color:var(--tint-ink);font-weight:650}
@@ -109,11 +123,17 @@ aside{background:var(--paper);border-right:1px solid var(--line);padding:24px 16
 .random-btn:hover{border-color:var(--line-2);background:var(--hover)}
 
 /* ---------- Main / intro / tabs ---------- */
-main{min-width:0;padding:28px 34px 50px;max-width:1700px;width:100%;margin:auto}
-.intro{display:flex;justify-content:space-between;align-items:flex-end;gap:20px;margin-bottom:22px}
-h1{font-size:clamp(27px,2.6vw,38px);line-height:1.2;letter-spacing:-1.3px;margin:7px 0 9px;font-weight:650}
-.intro p{margin:0;color:var(--muted);max-width:680px}
-.count{font:12px ui-monospace,Menlo,monospace;white-space:nowrap;background:var(--paper-2);border:1px solid var(--line);color:var(--muted);padding:9px 12px;border-radius:6px}
+main{min-width:0;padding:32px 38px 56px;max-width:1700px;width:100%;margin:auto}
+.intro{display:flex;justify-content:space-between;align-items:flex-end;gap:20px;margin-bottom:18px}
+h1{font-size:var(--fs-3);line-height:1.2;letter-spacing:-1.3px;margin:7px 0 9px;font-weight:650}
+.intro p{margin:0;color:var(--ink-2);max-width:680px}
+.count{font:12px ui-monospace,Menlo,monospace;white-space:nowrap;background:transparent;border:0;color:var(--muted);padding:4px 0;border-radius:0;opacity:.85}
+.coach{display:grid;grid-template-columns:repeat(3,minmax(0,1fr)) auto;gap:12px;align-items:stretch;margin:0 0 22px;padding:14px 16px;background:var(--paper);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow)}
+.coach-card{padding:10px 12px;background:var(--paper-2);border-radius:8px;border:1px solid var(--line-soft)}
+.coach-card b{display:block;font-size:13px;margin-bottom:4px;letter-spacing:-.2px}
+.coach-card p{margin:0;font-size:12px;line-height:1.45;color:var(--ink-2)}
+.coach-dismiss{align-self:center;background:var(--paper-2);border:1px solid var(--line);border-radius:7px;padding:10px 14px;font-size:13px;font-weight:650;white-space:nowrap}
+.coach-dismiss:hover{background:var(--hover)}
 .tabs{border-bottom:1px solid var(--line-2);display:flex;gap:24px;margin-bottom:26px;align-items:center}
 .tab{padding:13px 0;background:transparent;border-bottom:3px solid transparent;font-size:14px;color:var(--muted);font-weight:550;white-space:nowrap}
 .tab:hover{color:var(--ink)}
@@ -124,6 +144,7 @@ h1{font-size:clamp(27px,2.6vw,38px);line-height:1.2;letter-spacing:-1.3px;margin
 
 /* ---------- Shared components ---------- */
 .panel,.map-card,.detail{background:var(--paper);border:1px solid var(--line);border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow)}
+[data-theme="dark"] .panel,[data-theme="dark"] .map-card,[data-theme="dark"] .detail{box-shadow:inset 0 1px 0 color-mix(in srgb,var(--line) 55%,transparent)}
 .btn-primary{background:var(--accent);color:var(--accent-ink);border-radius:8px;padding:11px 20px;font-weight:700;font-size:14px}
 .btn-primary:hover{filter:brightness(.95)}
 .pill{border:1px solid var(--line);border-left:3px solid var(--group,#94a8b2);background:var(--paper-2);border-radius:6px;font-size:12px;padding:4px 9px;margin:3px 4px 0 0;color:var(--ink);display:inline-block}
@@ -131,7 +152,7 @@ h1{font-size:clamp(27px,2.6vw,38px);line-height:1.2;letter-spacing:-1.3px;margin
 .pill.known:after{content:' ✓';color:var(--accent-deep);font-weight:700}
 .section-lead{max-width:780px;margin-bottom:26px}
 .section-lead h2{font-size:clamp(24px,2vw,30px);letter-spacing:-.8px;margin:0 0 8px;line-height:1.2}
-.section-lead p{color:var(--muted);margin:0}
+.section-lead p{color:var(--ink-2);margin:0}
 .meter{height:6px;background:var(--line-soft);border-radius:99px;overflow:hidden;flex:1}
 .meter i{display:block;height:100%;background:linear-gradient(90deg,var(--accent-deep),var(--accent));border-radius:99px;transition:width .4s ease}
 .meter.big{height:9px;margin:12px 0}
@@ -144,55 +165,71 @@ h1{font-size:clamp(27px,2.6vw,38px);line-height:1.2;letter-spacing:-1.3px;margin
 .taxonomy small{font-size:12px;margin-left:auto;color:var(--muted)}
 
 /* ---------- Explore: graph ---------- */
-.explore-grid{display:grid;grid-template-columns:minmax(0,1fr) 380px;gap:20px;align-items:start}
+.explore-grid{display:grid;grid-template-columns:minmax(0,1fr) 380px;gap:22px;align-items:start}
+.map-fold{border:0;margin:0;padding:0}
+.map-fold>summary{list-style:none;cursor:pointer;display:none;font-size:14px;font-weight:650;padding:12px 16px;background:var(--paper);border:1px solid var(--line);border-radius:var(--radius);margin-bottom:12px;box-shadow:var(--shadow)}
+.map-fold>summary::-webkit-details-marker{display:none}
+.map-fold>summary:after{content:' +';color:var(--muted);float:right}
+.map-fold[open]>summary:after{content:' −'}
 .map-top{padding:20px 22px 0;display:flex;justify-content:space-between;gap:10px}
 .map-top h2{margin:3px 0 0;font-size:18px;font-weight:650;letter-spacing:-.3px}
-.map-top p{font-size:13px;color:var(--muted);margin:4px 0}
+.map-top p{font-size:13px;color:var(--ink-2);margin:4px 0}
 .map-tag{font:11px ui-monospace,Menlo,monospace;color:var(--muted);white-space:nowrap;letter-spacing:1px}
 .graph{position:relative;min-height:490px;background-image:radial-gradient(var(--dot) .8px,transparent .8px);background-size:16px 16px;padding:22px 18px;display:grid;grid-template-columns:minmax(0,1fr) minmax(140px,.8fr) minmax(0,1fr);gap:22px 64px;align-items:center}
 .wires{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;overflow:visible;grid-column:1/-1;grid-row:1;z-index:0}
 .graph-col{display:flex;flex-direction:column;gap:22px;z-index:1;min-width:0;max-width:100%}
-.node-wrap{text-align:center;animation:pop .28s ease both}
-.graph-col .node-wrap:nth-child(2){animation-delay:.05s}
-.graph-col .node-wrap:nth-child(3){animation-delay:.1s}
-.graph-col .node-wrap:nth-child(4){animation-delay:.15s}
-@keyframes pop{from{opacity:0;transform:translateY(7px)}to{opacity:1;transform:none}}
-.node{width:100%;padding:11px 8px;background:var(--paper);border:1px solid var(--line-2);border-left:3px solid var(--group);border-radius:8px;box-shadow:var(--shadow);font-size:14px;font-weight:600;line-height:1.3;overflow-wrap:anywhere;color:var(--ink);transition:transform .15s,border-color .15s,box-shadow .15s}
-.node:hover{transform:translateY(-2px);border-color:var(--group)}
+.node-wrap{text-align:center}
+.node{width:100%;padding:11px 8px;background:var(--paper);border:1px solid var(--line-2);border-left:3px solid var(--group);border-top:2px solid color-mix(in srgb,var(--group) 55%,transparent);border-radius:8px;box-shadow:var(--shadow);font-size:14px;font-weight:600;line-height:1.3;overflow-wrap:anywhere;color:var(--ink);transition:border-color .15s,box-shadow .15s}
+.node:hover{border-color:var(--group)}
 .node small{display:block;color:var(--muted);font:11px/1.4 ui-monospace,Menlo,monospace;margin-top:4px;font-weight:400}
 .relation{font-size:12px;line-height:1.35;background:var(--paper);border:1px solid var(--line-soft);border-radius:5px;padding:3px 7px;color:var(--muted);margin-bottom:6px;display:inline-block;max-width:100%}
-.center{background:var(--dark);color:#fff;border-color:var(--dark);padding:24px 8px;font-size:20px;border-radius:11px;position:relative;box-shadow:0 0 0 7px var(--ring)}
-.center small{color:var(--accent);font-size:11px;letter-spacing:1.5px;margin-bottom:8px;font-weight:650}
+.center{background:var(--dark);color:#fff;border-color:var(--dark);padding:24px 8px;font-size:20px;border-radius:11px;position:relative;box-shadow:0 0 0 7px var(--ring);overflow:hidden;z-index:1}
+.center-mark{position:absolute;inset:auto;left:50%;top:50%;width:72px;height:72px;transform:translate(-50%,-50%);opacity:.12;color:#fff;pointer-events:none;z-index:0}
+.center>*:not(.center-mark){position:relative;z-index:1}
+.center small{color:var(--accent);font-size:11px;letter-spacing:1.5px;margin-bottom:8px;font-weight:650;display:block}
 .center p{font-size:12px;font-weight:400;color:#cfdae0;margin:9px 0 0}
-.empty-graph{font-size:13px;color:var(--muted);text-align:center;padding:0 6px}
+.empty-graph{font-size:13px;color:var(--ink-2);text-align:center;padding:0 6px}
+.empty-graph.root{display:flex;flex-direction:column;align-items:center;gap:8px}
+.empty-graph.root .gicon{width:22px;height:22px;color:var(--muted)}
+.empty-graph.root p{margin:0;font-size:13px;color:var(--ink-2)}
+.map-legend{display:none;padding:0 20px 12px;font-size:12px;color:var(--muted)}
+.map-legend.on{display:block}
 .map-bottom{padding:13px 20px;border-top:1px solid var(--line);font-size:12px;color:var(--muted);display:flex;gap:12px;justify-content:space-between;align-items:center}
 .edge-count{background:none;color:var(--muted);font:12px ui-monospace,Menlo,monospace;padding:0;text-decoration:underline;text-underline-offset:3px;text-decoration-color:var(--line-2)}
 .edge-count:hover{color:var(--ink)}
 
 /* ---------- Explore: detail panel ---------- */
-.detail{padding:24px 24px 22px;position:sticky;top:16px;max-height:calc(100vh - 32px);overflow:auto;scrollbar-width:thin}
-.detail>*{animation:pop .25s ease both}
+.detail{padding:26px 26px 24px;position:sticky;top:16px;max-height:calc(100vh - 32px);overflow:auto;scrollbar-width:thin}
+.detail>*{animation:none}
 .detail .more{color:var(--ink);margin:0 0 14px}
-.badge{display:inline-block;font:11px ui-monospace,Menlo,monospace;text-transform:uppercase;letter-spacing:.8px;color:var(--group);background:color-mix(in srgb,var(--group) 10%,transparent);border:1px solid color-mix(in srgb,var(--group) 28%,transparent);padding:5px 9px;border-radius:5px}
+.badge{display:inline-flex;align-items:center;gap:6px;font:11px ui-monospace,Menlo,monospace;text-transform:uppercase;letter-spacing:.8px;color:var(--group);background:color-mix(in srgb,var(--group) 10%,transparent);border:1px solid color-mix(in srgb,var(--group) 28%,transparent);padding:5px 9px;border-radius:5px}
+.badge .gicon{width:12px;height:12px}
 .detail h2{font-size:28px;margin:13px 0 3px;letter-spacing:-.7px;line-height:1.16;overflow-wrap:anywhere}
-.full-name{font-size:13px;color:var(--muted);margin-bottom:14px}
-.plain{background:var(--tint);color:var(--tint-ink);border-radius:9px;padding:13px 15px;font-size:15px;line-height:1.55;margin:0 0 15px}
+.full-name{font-size:13px;color:var(--ink-2);margin-bottom:14px}
+.plain{background:var(--tint);color:var(--tint-ink);border-radius:9px;padding:13px 15px;font-size:15px;line-height:1.55;margin:0 0 12px}
 .plain b{display:block;font:10px ui-monospace,Menlo,monospace;letter-spacing:1.6px;text-transform:uppercase;margin-bottom:4px;opacity:.7}
+.depth-toggle{display:inline-flex;border:1px solid var(--line);border-radius:7px;overflow:hidden;margin:0 0 14px;background:var(--paper-2)}
+.depth-toggle button{background:transparent;padding:6px 12px;font-size:12px;font-weight:650;color:var(--muted)}
+.depth-toggle button.active{background:var(--paper);color:var(--ink);box-shadow:inset 0 0 0 1px var(--line-2)}
+.deeper[hidden]{display:none!important}
 .detail p{margin:0 0 14px;font-size:15px;line-height:1.65}
 .detail h3{font:11px ui-monospace,Menlo,monospace;text-transform:uppercase;letter-spacing:1.5px;color:var(--muted);margin:20px 0 8px}
-.detail-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:16px}
+.detail-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:4px;margin-bottom:4px}
 .gotit{border:1px solid var(--line-2);background:var(--paper);border-radius:7px;padding:8px 14px;font-size:13px;font-weight:650}
 .gotit:hover{border-color:var(--accent-deep)}
 .gotit.on{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
 .copylink{background:none;border:1px solid var(--line);border-radius:7px;padding:8px 14px;font-size:13px;color:var(--muted)}
 .copylink:hover{color:var(--ink);border-color:var(--line-2)}
 .example{background:var(--paper-2);border-left:3px solid var(--line-2);padding:12px 13px;border-radius:0 6px 6px 0;font-size:14px;line-height:1.6}
-.caution{font-size:14px;line-height:1.6;color:var(--muted)}
+.caution{font-size:14px;line-height:1.6;color:var(--ink-2)}
 .source-links{font-size:13px;margin-top:18px;padding-top:15px;border-top:1px solid var(--line)}
 .source-links b{display:block;font:10px ui-monospace,Menlo,monospace;letter-spacing:1.6px;text-transform:uppercase;color:var(--muted);margin-bottom:8px}
 .source-links a{display:block;margin:0 0 8px;line-height:1.45}
 .connections{margin-top:20px;padding:20px 22px}
 .connections h3{font-size:16px;margin:0 0 12px;letter-spacing:-.2px}
+.conn-details{margin:0}
+.conn-details>summary{cursor:pointer;font-size:13px;font-weight:650;color:var(--ink-2);padding:4px 0 10px;list-style:none}
+.conn-details>summary::-webkit-details-marker{display:none}
 .edge-row{display:flex;gap:8px;align-items:center;padding:9px 0;border-top:1px solid var(--line-soft);font-size:14px;flex-wrap:wrap}
 .edge-row .pill{margin:0}
 .edge-row span{color:var(--muted);font-size:13px}
@@ -287,6 +324,8 @@ noscript{display:block;padding:20px;text-align:center;font-weight:650}
   .explore-grid{grid-template-columns:minmax(0,1fr)}
   .detail{position:static;display:grid;grid-template-columns:1fr 1fr;gap:0 28px;max-height:none}
   .detail .definition{grid-row:span 2}
+  .detail .deeper{display:contents}
+  .detail .deeper[hidden]{display:none!important}
   .detail .source-links{grid-column:1/-1}
   .graph{min-height:400px;gap:18px 48px}
   .graph-col{gap:18px}
@@ -311,12 +350,17 @@ noscript{display:block;padding:20px;text-align:center;font-weight:650}
   .intro{display:block;margin-bottom:16px}
   .count{display:none}
   .intro p{font-size:15px}
+  .coach{grid-template-columns:1fr;gap:8px}
+  .coach-dismiss{justify-self:end}
   .tabs{gap:18px;overflow-x:auto;margin-bottom:18px}
   .tabs-hint{display:none}
   .tab{font-size:13px}
   .tab b{display:none}
   .taxonomy{gap:7px;font-size:12px;padding:11px}
   .taxonomy small{width:100%;margin-left:0}
+  .explore-grid{display:flex;flex-direction:column;gap:16px}
+  .detail{order:-1;display:block;padding:22px;position:static;max-height:none}
+  .map-fold>summary{display:block}
   .graph{padding:18px 10px;gap:9px 26px;grid-template-columns:minmax(0,1fr) minmax(90px,.82fr) minmax(0,1fr);min-height:440px}
   .node{font-size:12px;padding:10px 5px}
   .node small{font-size:10px}
@@ -325,7 +369,6 @@ noscript{display:block;padding:20px;text-align:center;font-weight:650}
   .center small{font-size:9px}
   .relation{font-size:11px}
   .graph-col{gap:14px}
-  .detail{display:block;padding:22px}
   .map-top{padding:17px 16px 0}
   .map-top h2{font-size:16px}
   .map-tag{display:none}
@@ -346,7 +389,7 @@ noscript{display:block;padding:20px;text-align:center;font-weight:650}
 @media(prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important;scroll-behavior:auto!important}}
 @media print{
   header{background:#fff;color:#000}
-  aside,.tabs,.mobile-menu,.wires,.header-tools,.detail-actions{display:none}
+  aside,.tabs,.mobile-menu,.wires,.header-tools,.detail-actions,.coach,.map-fold>summary{display:none}
   .shell{display:block}
   main{padding:0}
   .explore-grid{display:block}
@@ -354,12 +397,23 @@ noscript{display:block;padding:20px;text-align:center;font-weight:650}
   .graph{min-height:360px}
   .panel{break-inside:avoid}
   .source-panel{display:none}
+  .map-fold{display:block}
 }
 </style>
 </head>
 <body>
 <noscript>AI Atlas is an interactive guide and needs JavaScript to run.</noscript>
 <a class="skip" href="#main">Skip to content</a>
+<svg xmlns="http://www.w3.org/2000/svg" hidden aria-hidden="true">
+  <symbol id="icon-foundations" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8" fill="none" stroke="currentColor" stroke-width="1.6"/><circle cx="12" cy="12" r="4" fill="none" stroke="currentColor" stroke-width="1.6"/></symbol>
+  <symbol id="icon-models" viewBox="0 0 24 24"><rect x="5" y="4" width="14" height="4" rx="1.5" fill="none" stroke="currentColor" stroke-width="1.6"/><rect x="5" y="10" width="14" height="4" rx="1.5" fill="none" stroke="currentColor" stroke-width="1.6"/><rect x="5" y="16" width="14" height="4" rx="1.5" fill="none" stroke="currentColor" stroke-width="1.6"/></symbol>
+  <symbol id="icon-learning" viewBox="0 0 24 24"><path d="M4 18 L10 12 L14 15 L20 6" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/><circle cx="4" cy="18" r="1.6" fill="currentColor" stroke="none"/><circle cx="10" cy="12" r="1.6" fill="currentColor" stroke="none"/><circle cx="14" cy="15" r="1.6" fill="currentColor" stroke="none"/><circle cx="20" cy="6" r="1.6" fill="currentColor" stroke="none"/></symbol>
+  <symbol id="icon-retrieval" viewBox="0 0 24 24"><circle cx="10.5" cy="10.5" r="5.5" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M15 15 L20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></symbol>
+  <symbol id="icon-apps" viewBox="0 0 24 24"><path d="M5 4 L10 19 L13 13 L19 10 Z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><path d="M16 4 L17.2 6.8 L20 8 L17.2 9.2 L16 12 L14.8 9.2 L12 8 L14.8 6.8 Z" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></symbol>
+  <symbol id="icon-runtime" viewBox="0 0 24 24"><path d="M5 16 A8 8 0 0 1 19 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><path d="M12 14 L16 8" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><circle cx="12" cy="14" r="1.4" fill="currentColor" stroke="none"/></symbol>
+  <symbol id="icon-tools" viewBox="0 0 24 24"><path d="M14.5 5.5 A4 4 0 0 0 9 10.5 L6 13.5 8.5 16 11.5 13 A4 4 0 0 0 16.5 7.5 L14.5 5.5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><path d="M6 13.5 L4.5 18.5 9.5 17" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></symbol>
+  <symbol id="icon-root" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8" fill="none" stroke="currentColor" stroke-width="1.6"/><circle cx="12" cy="12" r="4" fill="none" stroke="currentColor" stroke-width="1.6"/><circle cx="12" cy="12" r="1.2" fill="currentColor" stroke="none"/></symbol>
+</svg>
 
 <header>
   <button type="button" class="brand" data-home aria-label="AI Atlas home — open the default concept map"><div class="mark" aria-hidden="true">A</div>AI ATLAS <span>/</span></button>
@@ -377,6 +431,10 @@ noscript{display:block;padding:20px;text-align:center;font-weight:650}
   <aside id="sidebar">
     <div class="eyebrow">The concept index</div>
     <div class="searchbox"><span aria-hidden="true">⌕</span><input id="search" type="search" placeholder="Find a term…  ( press / )" aria-label="Search AI concepts"></div>
+    <div class="filter-chips" role="group" aria-label="Concept filter">
+      <button type="button" data-filter="all" class="active">All concepts</button>
+      <button type="button" data-filter="beginner">Beginner set</button>
+    </div>
     <nav id="terms" aria-label="AI concepts"></nav>
     <div class="sidebar-foot">
       Start anywhere. Follow a connection.<br>Every term is part of a bigger picture.
@@ -394,13 +452,20 @@ noscript{display:block;padding:20px;text-align:center;font-weight:650}
       <div class="count" id="count"></div>
     </div>
 
+    <div id="coach" class="coach" hidden>
+      <div class="coach-card"><b>1. Pick a concept</b><p>Start from the sidebar, the taxonomy strip, or any connected node on the map.</p></div>
+      <div class="coach-card"><b>2. Read left to right</b><p>Incoming ideas feed the center; outgoing links show where it leads next.</p></div>
+      <div class="coach-card"><b>3. Mark it understood</b><p>Tick concepts as you go — your progress stays in this browser.</p></div>
+      <button type="button" class="coach-dismiss" data-coach-dismiss>Got it</button>
+    </div>
+
     <nav class="tabs" aria-label="Guide views">
       <button class="tab active" data-view="explore" aria-current="page"><b>01</b>Concept map</button>
       <button class="tab" data-view="path"><b>02</b>Guided path</button>
       <button class="tab" data-view="flows"><b>03</b>In practice</button>
       <button class="tab" data-view="compare"><b>04</b>Common mix-ups</button>
       <button class="tab" data-view="quiz"><b>05</b>Check yourself</button>
-      <button class="tabs-hint" data-view="path">Feeling overwhelmed? Start the guided path →</button>
+      <button class="tabs-hint" id="tabs-hint" data-view="path">Feeling overwhelmed? Start the guided path →</button>
     </nav>
 
     <section id="explore">
@@ -411,22 +476,26 @@ noscript{display:block;padding:20px;text-align:center;font-weight:650}
         <small>⊃ means “contains” · only one part of the landscape</small>
       </div>
       <div class="explore-grid">
-        <div>
-          <section class="map-card">
-            <div class="map-top">
-              <div>
-                <div class="eyebrow">Relationship map</div>
-                <h2 id="map-title"></h2>
-                <p>Read left → right. Select a concept to follow it.</p>
+        <div class="explore-map">
+          <details class="map-fold" open>
+            <summary>See how it connects</summary>
+            <section class="map-card">
+              <div class="map-top">
+                <div>
+                  <div class="eyebrow">Relationship map</div>
+                  <h2 id="map-title"></h2>
+                  <p>Read left → right. Select a concept to follow it.</p>
+                </div>
+                <span class="map-tag">CONNECTED VIEW</span>
               </div>
-              <span class="map-tag">CONNECTED VIEW</span>
-            </div>
-            <div class="graph" id="graph"></div>
-            <div class="map-bottom">
-              <span>Arrows show the labeled relationship, not always a data flow.</span>
-              <button class="edge-count" id="edge-count" data-scroll="connections-panel"></button>
-            </div>
-          </section>
+              <div class="graph" id="graph"></div>
+              <div class="map-legend" id="map-legend">Colours mark concept groups</div>
+              <div class="map-bottom">
+                <span>Arrows show the labeled relationship, not always a data flow.</span>
+                <button class="edge-count" id="edge-count" data-scroll="connections-panel"></button>
+              </div>
+            </section>
+          </details>
           <section class="panel connections" id="connections-panel">
             <h3>Every direct connection</h3>
             <div id="connections"></div>
@@ -696,10 +765,30 @@ const store={
 };
 let selected='ai', view='explore', quiz=null;
 let understood=new Set(store.get('atlas-understood',[]));
+let depth=store.get('atlas-depth','plain');
+let termFilter=store.get('atlas-filter','all');
+const BEGINNER_IDS=new Set(PATH.slice(0,4).flatMap(s=>s.ids));
 
 function termButton(id,cls='pill'){
   const known=understood.has(id)?' known':'';
   return `<button class="${cls}${known}" data-id="${id}" data-group="${N[id].group}">${esc(N[id].name)}</button>`;
+}
+function groupIcon(group,cls='gicon'){
+  return `<svg class="${cls}" aria-hidden="true"><use href="#icon-${group}"></use></svg>`;
+}
+function scrollBeh(){
+  return matchMedia('(prefers-reduced-motion: reduce)').matches?'instant':'smooth';
+}
+function syncMapFold(){
+  const fold=document.querySelector('.map-fold');
+  if(!fold)return;
+  if(innerWidth>760)fold.open=true;
+}
+let syncingIndex=false;
+function persistOpenGroups(){
+  if(syncingIndex)return;
+  const open=[...document.querySelectorAll('#terms .cat[open]')].map(el=>el.dataset.group);
+  store.set('atlas-open-groups',open);
 }
 
 /* ============================================================
@@ -707,13 +796,29 @@ function termButton(id,cls='pill'){
    ============================================================ */
 function renderIndex(query){
   query=(query||'').trim().toLowerCase();
+  let savedOpen=store.get('atlas-open-groups',null);
+  if(savedOpen===null&&N[selected]){
+    savedOpen=[N[selected].group];
+    store.set('atlas-open-groups',savedOpen);
+  }
+  syncingIndex=true;
   const html=GROUPS.map(g=>{
-    const items=DATA.filter(d=>d.group===g[0]&&(!query||[d.name,d.full,d.def,d.more||'',d.plain,...(d.id==='hf'?['huggigface','huggingface']:[])].join(' ').toLowerCase().includes(query)));
+    const items=DATA.filter(d=>{
+      if(d.group!==g[0])return false;
+      if(termFilter==='beginner'&&!BEGINNER_IDS.has(d.id))return false;
+      if(!query)return true;
+      return [d.name,d.full,d.def,d.more||'',d.plain,...(d.id==='hf'?['huggigface','huggingface']:[])].join(' ').toLowerCase().includes(query);
+    });
     if(!items.length)return '';
     const known=items.filter(d=>understood.has(d.id)).length;
-    return `<details class="cat" data-group="${g[0]}" open><summary><span class="cat-title"><i class="dot"></i>${g[1]} <span class="cat-count">${known}/${items.length}</span></span></summary>${items.map(d=>`<button data-id="${d.id}" class="term ${selected===d.id?'active':''} ${understood.has(d.id)?'known':''}" ${selected===d.id?'aria-current="true"':''}>${esc(d.name)}<span class="tick" aria-hidden="true">✓</span></button>`).join('')}</details>`;
+    const isOpen=Array.isArray(savedOpen)?savedOpen.includes(g[0]):g[0]===(N[selected]&&N[selected].group);
+    return `<details class="cat" data-group="${g[0]}" ${isOpen?'open':''}><summary><span class="cat-title">${groupIcon(g[0])}${g[1]} <span class="cat-count">${known}/${items.length}</span></span></summary>${items.map(d=>`<button data-id="${d.id}" class="term ${selected===d.id?'active':''} ${understood.has(d.id)?'known':''}" ${selected===d.id?'aria-current="true"':''}>${esc(d.name)}<span class="tick" aria-hidden="true">✓</span></button>`).join('')}</details>`;
   }).join('');
   document.getElementById('terms').innerHTML=html||'<p class="no-results">No matching concept. Try “model”, “retrieval”, or “training”.</p>';
+  document.querySelectorAll('.filter-chips [data-filter]').forEach(b=>{
+    b.classList.toggle('active',b.dataset.filter===termFilter);
+  });
+  syncingIndex=false;
 }
 
 /* ============================================================
@@ -721,27 +826,42 @@ function renderIndex(query){
    ============================================================ */
 function renderGraph(){
   const n=N[selected];
+  const graphEl=document.getElementById('graph');
   const ins=E.filter(e=>e[2]===selected), outs=E.filter(e=>e[0]===selected);
   const prioritized=selected==='llm'?ins.slice().sort((a,b)=>{
     const order=['transformer','rag','agent','vlm'];
     const rank=e=>order.includes(e[0])?order.indexOf(e[0]):99;
     return rank(a)-rank(b);
   }):ins;
-  const shownIn=prioritized.slice(0,4), shownOut=outs.slice(0,4);
   document.getElementById('map-title').textContent=`The neighborhood of ${n.name}`;
-  const col=(edges,incoming)=>edges.length?edges.map(e=>{
-    const id=e[incoming?0:2];
-    return `<div class="node-wrap"><span class="relation">${esc(e[1])} →</span><button class="node" data-id="${id}" data-group="${N[id].group}" aria-label="${esc(N[e[0]].name+' '+e[1]+' '+N[e[2]].name)}">${esc(N[id].name)}<small>${esc(N[id].kind)}</small></button></div>`;
-  }).join(''):`<div class="empty-graph">${incoming?'A starting point in this guide.':'Explore its incoming connections.'}</div>`;
-  document.getElementById('graph').innerHTML=`<svg class="wires" aria-hidden="true"><defs><marker id="arrow" viewBox="0 0 10 10" markerWidth="11" markerHeight="11" refX="9" refY="5" orient="auto" markerUnits="userSpaceOnUse"><path d="M0 1 9 5 0 9z" fill="#a9b9c3"/></marker></defs></svg><div class="graph-col incoming">${col(shownIn,true)}</div><div class="graph-col"><div class="node center"><small>YOU ARE HERE</small>${esc(n.name)}<p>${esc(n.kind)}</p></div></div><div class="graph-col outgoing">${col(shownOut,false)}</div>`;
-  const total=ins.length+outs.length, shown=shownIn.length+shownOut.length;
-  document.getElementById('edge-count').textContent=total>shown?`${shown} of ${total} shown — see all ↓`:`${total} connection${total===1?'':'s'}`;
-  document.getElementById('connections').innerHTML=ins.concat(outs).map(e=>`<div class="edge-row">${termButton(e[0])}<span>${esc(e[1])} →</span>${termButton(e[2])}</div>`).join('');
+  const col=(edges,incoming)=>{
+    if(!edges.length){
+      if(incoming)return `<div class="empty-graph root">${groupIcon('root')}<p>This is the top of the tree.</p></div>`;
+      return `<div class="empty-graph">Explore its incoming connections.</div>`;
+    }
+    return edges.map(e=>{
+      const id=e[incoming?0:2];
+      return `<div class="node-wrap"><span class="relation">${esc(e[1])} →</span><button class="node" data-id="${id}" data-group="${N[id].group}" aria-label="${esc(N[e[0]].name+' '+e[1]+' '+N[e[2]].name)}">${esc(N[id].name)}<small>${esc(N[id].kind)}</small></button></div>`;
+    }).join('');
+  };
+  graphEl.innerHTML=`<svg class="wires" aria-hidden="true"><defs><marker id="arrow" viewBox="0 0 10 10" markerWidth="11" markerHeight="11" refX="9" refY="5" orient="auto" markerUnits="userSpaceOnUse"><path d="M0 1 9 5 0 9z" fill="#a9b9c3"/></marker></defs></svg><div class="graph-col incoming">${col(prioritized,true)}</div><div class="graph-col"><div class="node center" data-group="${n.group}">${groupIcon(n.group,'center-mark gicon')}<small>YOU ARE HERE</small>${esc(n.name)}<p>${esc(n.kind)}</p></div></div><div class="graph-col outgoing">${col(outs,false)}</div>`;
+  const neighGroups=new Set([n.group,...prioritized.map(e=>N[e[0]].group),...outs.map(e=>N[e[2]].group)]);
+  document.getElementById('map-legend').classList.toggle('on',neighGroups.size>=3);
+  requestAnimationFrame(drawWires);
+  setTimeout(drawWires, 280);
+  const total=ins.length+outs.length;
+  document.getElementById('edge-count').textContent=`${total} connection${total===1?'':'s'}`;
+  const allEdges=ins.concat(outs);
+  const edgeRows=allEdges.map(e=>`<div class="edge-row">${termButton(e[0])}<span>${esc(e[1])} →</span>${termButton(e[2])}</div>`).join('');
+  if(allEdges.length>3){
+    document.getElementById('connections').innerHTML=`<details class="conn-details"><summary>${allEdges.length} connections — show all</summary>${edgeRows}</details>`;
+  }else{
+    document.getElementById('connections').innerHTML=edgeRows;
+  }
   const got=understood.has(selected);
   const refs=n.refs.filter(k=>SOURCES[k]);
-  document.getElementById('detail').innerHTML=`<div class="definition"><span class="badge" data-group="${n.group}">${esc(n.kind)}</span><h2>${esc(n.name)}</h2><div class="full-name">${esc(n.full)}</div><div class="plain"><b>In plain words</b>${esc(n.plain)}</div><p>${esc(n.def)}</p>${n.more?`<p class="more">${esc(n.more)}</p>`:''}<div class="detail-actions"><button class="gotit ${got?'on':''}" data-got="${selected}" aria-pressed="${got}">${got?'✓ Understood':'Mark as understood'}</button><button class="copylink" data-copy>Copy link</button></div></div><div><h3>A concrete example</h3><div class="example">${esc(n.example)}</div></div><div><h3>Keep this distinction</h3><div class="caution">${esc(n.caution)}</div></div>${refs.length?`<div class="source-links"><b>Related reading</b>${refs.map(k=>`<a target="_blank" rel="noopener noreferrer" href="${SOURCES[k][1]}">${esc(SOURCES[k][0])} ↗</a>`).join('')}</div>`:''}`;
-  requestAnimationFrame(drawWires);
-  setTimeout(drawWires, 320);
+  const fullOpen=depth==='full';
+  document.getElementById('detail').innerHTML=`<div class="definition"><span class="badge" data-group="${n.group}">${groupIcon(n.group)}${esc(n.kind)}</span><h2>${esc(n.name)}</h2><div class="full-name">${esc(n.full)}</div><div class="plain"><b>In plain words</b>${esc(n.plain)}</div><div class="depth-toggle" role="group" aria-label="Reading depth"><button type="button" data-depth="plain" class="${depth==='plain'?'active':''}">Plain</button><button type="button" data-depth="full" class="${depth==='full'?'active':''}">Full</button></div><div class="detail-actions"><button class="gotit ${got?'on':''}" data-got="${selected}" aria-pressed="${got}">${got?'✓ Understood':'Mark as understood'}</button><button class="copylink" data-copy>Copy link</button></div></div><div class="deeper" ${fullOpen?'':'hidden'}><p>${esc(n.def)}</p>${n.more?`<p class="more">${esc(n.more)}</p>`:''}<div><h3>A concrete example</h3><div class="example">${esc(n.example)}</div></div><div><h3>Keep this distinction</h3><div class="caution">${esc(n.caution)}</div></div>${refs.length?`<div class="source-links"><b>Related reading</b>${refs.map(k=>`<a target="_blank" rel="noopener noreferrer" href="${SOURCES[k][1]}">${esc(SOURCES[k][0])} ↗</a>`).join('')}</div>`:''}</div>`;
 }
 
 function drawWires(){
@@ -788,7 +908,7 @@ function drawWires(){
     const x1=n.x+n.w+pad, x2=Math.max(C.x-pad, x1+minRun);
     add(x1, n.my, x2, C.my);
   });
-  el.querySelectorAll('.outgoing .node').forEach(node=>{
+  el.querySelectorAll('.outgoing .node[data-id]').forEach(node=>{
     const n=box(node.getBoundingClientRect());
     const x1=C.x+C.w+pad, x2=Math.max(n.x-pad, x1+minRun);
     add(x1, C.my, x2, n.my);
@@ -873,7 +993,29 @@ function renderQuiz(){
 function renderProgress(){
   const p=document.getElementById('progress');
   p.querySelector('i').style.width=(100*understood.size/DATA.length)+'%';
-  p.querySelector('span').textContent=`${understood.size}/${DATA.length} understood`;
+  p.querySelector('span').textContent=understood.size===0?'Start with AI':`${understood.size}/${DATA.length} understood`;
+  renderHint();
+}
+function renderHint(){
+  const hint=document.getElementById('tabs-hint');
+  if(!hint)return;
+  if(understood.size===0){
+    hint.removeAttribute('data-id');
+    hint.setAttribute('data-view','path');
+    hint.textContent='Feeling overwhelmed? Start the guided path →';
+    return;
+  }
+  const ordered=PATH.flatMap(s=>s.ids);
+  const next=ordered.find(id=>!understood.has(id));
+  if(!next){
+    hint.removeAttribute('data-id');
+    hint.setAttribute('data-view','path');
+    hint.textContent='Path complete — revisit any concept →';
+    return;
+  }
+  hint.removeAttribute('data-view');
+  hint.setAttribute('data-id',next);
+  hint.textContent=`Next on the path: ${N[next].name}`;
 }
 function setView(v){
   view=v;
@@ -898,7 +1040,7 @@ function choose(id,push=true){
   if(innerWidth<=760){
     document.getElementById('sidebar').classList.remove('open');
     document.getElementById('menu').setAttribute('aria-expanded','false');
-    document.getElementById('explore').scrollIntoView({block:'start'});
+    document.getElementById('explore').scrollIntoView({block:'start',behavior:scrollBeh()});
   }
 }
 function toggleUnderstood(id){
@@ -927,7 +1069,27 @@ document.addEventListener('click',event=>{
   if(home){
     document.getElementById('search').value='';
     choose('ai');
-    window.scrollTo({top:0,behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'instant':'smooth'});
+    window.scrollTo({top:0,behavior:scrollBeh()});
+    return;
+  }
+  const coach=event.target.closest('[data-coach-dismiss]');
+  if(coach){
+    store.set('atlas-seen',true);
+    document.getElementById('coach').hidden=true;
+    return;
+  }
+  const depthBtn=event.target.closest('[data-depth]');
+  if(depthBtn){
+    depth=depthBtn.dataset.depth==='full'?'full':'plain';
+    store.set('atlas-depth',depth);
+    if(view==='explore')renderGraph();
+    return;
+  }
+  const filterBtn=event.target.closest('[data-filter]');
+  if(filterBtn){
+    termFilter=filterBtn.dataset.filter==='beginner'?'beginner':'all';
+    store.set('atlas-filter',termFilter);
+    renderIndex(document.getElementById('search').value);
     return;
   }
   const term=event.target.closest('[data-id]');
@@ -947,14 +1109,15 @@ document.addEventListener('click',event=>{
   }
   const rnd=event.target.closest('[data-random]');
   if(rnd){
-    const others=DATA.filter(d=>d.id!==selected);
+    const pool=termFilter==='beginner'?DATA.filter(d=>BEGINNER_IDS.has(d.id)):DATA;
+    const others=pool.filter(d=>d.id!==selected);
     choose(others[Math.floor(Math.random()*others.length)].id);
     return;
   }
   const sc=event.target.closest('[data-scroll]');
   if(sc){
     const t=document.getElementById(sc.dataset.scroll);
-    if(t)t.scrollIntoView({behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'instant':'smooth',block:'start'});
+    if(t)t.scrollIntoView({behavior:scrollBeh(),block:'start'});
     return;
   }
   const ans=event.target.closest('[data-answer]');
@@ -973,6 +1136,9 @@ document.addEventListener('click',event=>{
     return;
   }
 });
+document.getElementById('terms').addEventListener('toggle',e=>{
+  if(e.target.classList.contains('cat'))persistOpenGroups();
+},true);
 document.getElementById('search').addEventListener('input',e=>renderIndex(e.target.value));
 document.getElementById('menu').addEventListener('click',()=>{
   const open=document.getElementById('sidebar').classList.toggle('open');
@@ -990,15 +1156,23 @@ document.addEventListener('keydown',e=>{
     s.focus();s.select();
   }
 });
-window.addEventListener('resize',()=>requestAnimationFrame(drawWires));
+window.addEventListener('resize',()=>{
+  syncMapFold();
+  requestAnimationFrame(drawWires);
+});
 window.addEventListener('hashchange',()=>{const id=location.hash.slice(1);if(N[id]&&id!==selected)choose(id,false)});
 
 /* ============================================================
    Init
    ============================================================ */
 if(document.documentElement.dataset.theme==='dark')document.getElementById('theme').textContent='☀';
+if(!store.get('atlas-seen',false))document.getElementById('coach').hidden=false;
 document.getElementById('count').textContent=`${DATA.length} CONCEPTS / ${GROUPS.length} LENSES`;
 document.getElementById('sources').innerHTML=Object.values(SOURCES).map(s=>`<a href="${s[1]}" target="_blank" rel="noopener noreferrer">${esc(s[0])} ↗</a>`).join('');
+if(innerWidth<=760){
+  const fold=document.querySelector('.map-fold');
+  if(fold)fold.open=false;
+}
 renderProgress();
 renderFlows();
 renderCompare();
