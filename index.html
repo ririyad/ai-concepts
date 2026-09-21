@@ -28,11 +28,12 @@ try{const t=localStorage.getItem('atlas-theme');if(t==='dark')document.documentE
   --radius:12px;
   --fs-0:13px; --fs-1:15px; --fs-2:16px; --fs-3:clamp(27px,2.6vw,38px);
   --serif:'Source Serif 4',Georgia,serif;
+  --sticky-tabs:56px;
 }
 [data-theme="dark"]{
   --bg:#0d171d; --paper:#15242d; --paper-2:#1a2c36; --ink:#e3edf2; --ink-2:#b7c9d2; --muted:#93a7b1;
   --line:#243945; --line-soft:#1d303b; --line-2:#33505e;
-  --accent:#c7f36b; --accent-deep:#a3d94e; --accent-ink:#c7f36b;
+  --accent:#c7f36b; --accent-deep:#a3d94e; --accent-ink:#213916;
   --dark:#0a141a; --dark-2:#1c313c;
   --tint:#22331c; --tint-ink:#d6f3a1; --hover:#1c2f3a;
   --wire:#3d5866; --dot:#21333d; --focus:#7dabf5; --ring:#c7f36b1f;
@@ -66,7 +67,7 @@ a{color:#2864c5;text-underline-offset:3px}
 [data-theme="dark"] a{color:#8fb6f5}
 button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,summary:focus-visible{outline:3px solid var(--focus);outline-offset:3px}
 .node:focus-visible,.term:focus-visible,.tab:focus-visible{outline:3px solid var(--focus);outline-offset:2px}
-body,.panel,.map-card,.detail,.node,.term,.tab,.flow-choice,aside,header,.quiz-opt{transition:background-color .25s,border-color .25s,color .25s}
+body,.panel,.map-card,.detail,.node,.term,.tab,.tabs,.flow-choice,aside,header,.quiz-opt{transition:background-color .25s,border-color .25s,color .25s}
 .skip{position:absolute;top:-100px;left:20px;z-index:50;background:var(--paper);color:var(--ink);padding:12px;border-radius:0 0 8px 8px}
 .skip:focus{top:0}
 ::selection{background:var(--accent);color:var(--accent-ink)}
@@ -86,8 +87,9 @@ header{height:70px;background:var(--dark);color:#fff;display:flex;align-items:ce
 .progress{display:flex;align-items:center;gap:10px;font:12px ui-monospace,Menlo,monospace;color:#b8c9d1;white-space:nowrap}
 .progress .bar{width:90px;height:5px;background:var(--dark-2);border-radius:99px;overflow:hidden}
 .progress .bar i{display:block;height:100%;background:var(--accent);border-radius:99px;transition:width .4s ease}
-.icon-btn{background:var(--dark-2);color:#fff;width:34px;height:34px;border-radius:8px;font-size:16px;display:grid;place-items:center;line-height:1}
-.icon-btn:hover{background:#3a5563}
+.icon-btn,a.icon-btn{background:var(--dark-2);color:#fff;width:34px;height:34px;border-radius:8px;font-size:16px;display:grid;place-items:center;line-height:1;text-decoration:none;flex-shrink:0}
+.icon-btn:hover,a.icon-btn:hover{background:#3a5563}
+.icon-btn svg{width:16px;height:16px;display:block}
 .mobile-menu{display:none}
 
 /* ---------- Shell / sidebar ---------- */
@@ -134,7 +136,7 @@ h1{font-size:var(--fs-3);line-height:1.2;letter-spacing:-1.3px;margin:7px 0 9px;
 .coach-card p{margin:0;font-size:12px;line-height:1.45;color:var(--ink-2)}
 .coach-dismiss{align-self:center;background:var(--paper-2);border:1px solid var(--line);border-radius:7px;padding:10px 14px;font-size:13px;font-weight:650;white-space:nowrap}
 .coach-dismiss:hover{background:var(--hover)}
-.tabs{border-bottom:1px solid var(--line-2);display:flex;gap:24px;margin-bottom:26px;align-items:center}
+.tabs{border-bottom:1px solid var(--line-2);display:flex;gap:24px;margin-bottom:26px;align-items:center;position:sticky;top:0;z-index:8;background:var(--bg)}
 .tab{padding:13px 0;background:transparent;border-bottom:3px solid transparent;font-size:14px;color:var(--muted);font-weight:550;white-space:nowrap}
 .tab:hover{color:var(--ink)}
 .tab.active{color:var(--ink);border-color:var(--ink)}
@@ -199,7 +201,7 @@ h1{font-size:var(--fs-3);line-height:1.2;letter-spacing:-1.3px;margin:7px 0 9px;
 .edge-count:hover{color:var(--ink)}
 
 /* ---------- Explore: detail panel ---------- */
-.detail{padding:26px 26px 24px;position:sticky;top:16px;max-height:calc(100vh - 32px);overflow:auto;scrollbar-width:thin}
+.detail{padding:26px 26px 24px;position:sticky;top:calc(var(--sticky-tabs) + 16px);max-height:calc(100vh - var(--sticky-tabs) - 32px);overflow:auto;scrollbar-width:thin}
 .detail>*{animation:none}
 .detail .more{color:var(--ink);margin:0 0 14px}
 .badge{display:inline-flex;align-items:center;gap:6px;font:11px ui-monospace,Menlo,monospace;text-transform:uppercase;letter-spacing:.8px;color:var(--group);background:color-mix(in srgb,var(--group) 10%,transparent);border:1px solid color-mix(in srgb,var(--group) 28%,transparent);padding:5px 9px;border-radius:5px}
@@ -413,6 +415,7 @@ noscript{display:block;padding:20px;text-align:center;font-weight:650}
   <symbol id="icon-runtime" viewBox="0 0 24 24"><path d="M5 16 A8 8 0 0 1 19 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><path d="M12 14 L16 8" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><circle cx="12" cy="14" r="1.4" fill="currentColor" stroke="none"/></symbol>
   <symbol id="icon-tools" viewBox="0 0 24 24"><path d="M14.5 5.5 A4 4 0 0 0 9 10.5 L6 13.5 8.5 16 11.5 13 A4 4 0 0 0 16.5 7.5 L14.5 5.5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><path d="M6 13.5 L4.5 18.5 9.5 17" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></symbol>
   <symbol id="icon-root" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8" fill="none" stroke="currentColor" stroke-width="1.6"/><circle cx="12" cy="12" r="4" fill="none" stroke="currentColor" stroke-width="1.6"/><circle cx="12" cy="12" r="1.2" fill="currentColor" stroke="none"/></symbol>
+  <symbol id="icon-github" viewBox="0 0 24 24"><path fill="currentColor" d="M12 2C6.477 2 2 6.477 2 12c0 4.42 2.865 8.17 6.839 9.49.5.092.682-.217.682-.482 0-.237-.008-.866-.013-1.7-2.782.603-3.369-1.34-3.369-1.34-.454-1.156-1.11-1.463-1.11-1.463-.908-.62.069-.608.069-.608 1.003.07 1.531 1.03 1.531 1.03.892 1.529 2.341 1.087 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.11-4.555-4.943 0-1.091.39-1.984 1.029-2.683-.103-.253-.446-1.27.098-2.647 0 0 .84-.269 2.75 1.025A9.578 9.578 0 0 1 12 6.836c.85.004 1.705.114 2.504.336 1.909-1.294 2.747-1.025 2.747-1.025.546 1.377.203 2.394.1 2.647.64.699 1.028 1.592 1.028 2.683 0 3.842-2.339 4.687-4.566 4.935.359.309.678.919.678 1.852 0 1.336-.012 2.415-.012 2.743 0 .267.18.578.688.48C19.138 20.167 22 16.418 22 12c0-5.523-4.477-10-10-10z"/></symbol>
 </svg>
 
 <header>
@@ -422,6 +425,9 @@ noscript{display:block;padding:20px;text-align:center;font-weight:650}
     <div class="progress" id="progress" role="status" aria-live="polite" title="Concepts you have marked as understood">
       <div class="bar" aria-hidden="true"><i style="width:0%"></i></div><span></span>
     </div>
+    <a class="icon-btn" href="https://github.com/ririyad/ai-concepts" target="_blank" rel="noopener noreferrer" aria-label="GitHub repository (opens in a new tab)" title="View source on GitHub">
+      <svg aria-hidden="true"><use href="#icon-github"/></svg>
+    </a>
     <button class="icon-btn" id="theme" aria-label="Toggle dark mode" title="Toggle dark mode">☾</button>
     <button class="icon-btn mobile-menu" id="menu" aria-expanded="false" aria-controls="sidebar" aria-label="Browse terms">☰</button>
   </div>
