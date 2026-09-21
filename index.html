@@ -84,9 +84,6 @@ header{height:70px;background:var(--dark);color:#fff;display:flex;align-items:ce
 .brand span:last-child{font-weight:400;color:#acc1cb}
 .edition{font:12px ui-monospace,SFMono-Regular,Menlo,monospace;color:#b8c9d1;letter-spacing:1.5px;margin-right:auto}
 .header-tools{display:flex;align-items:center;gap:12px}
-.progress{display:flex;align-items:center;gap:10px;font:12px ui-monospace,Menlo,monospace;color:#b8c9d1;white-space:nowrap}
-.progress .bar{width:90px;height:5px;background:var(--dark-2);border-radius:99px;overflow:hidden}
-.progress .bar i{display:block;height:100%;background:var(--accent);border-radius:99px;transition:width .4s ease}
 .icon-btn,a.icon-btn{background:var(--dark-2);color:#fff;width:34px;height:34px;border-radius:8px;font-size:16px;display:grid;place-items:center;line-height:1;text-decoration:none;flex-shrink:0}
 .icon-btn:hover,a.icon-btn:hover{background:#3a5563}
 .icon-btn svg{width:16px;height:16px;display:block}
@@ -339,8 +336,6 @@ noscript{display:block;padding:20px;text-align:center;font-weight:650}
   header{height:62px;padding:0 16px;gap:10px}
   .brand{font-size:19px}
   .edition{display:none}
-  .progress span{display:none}
-  .progress .bar{width:56px}
   .shell{display:block}
   aside{position:static;height:auto;padding:14px 18px;display:none;border-right:0;border-bottom:1px solid var(--line)}
   aside.open{display:block}
@@ -422,9 +417,6 @@ noscript{display:block;padding:20px;text-align:center;font-weight:650}
   <button type="button" class="brand" data-home aria-label="AI Atlas home — open the default concept map"><div class="mark" aria-hidden="true">A</div>AI ATLAS <span>/</span></button>
   <div class="edition">A FIELD GUIDE TO CONNECTED CONCEPTS</div>
   <div class="header-tools">
-    <div class="progress" id="progress" role="status" aria-live="polite" title="Concepts you have marked as understood">
-      <div class="bar" aria-hidden="true"><i style="width:0%"></i></div><span></span>
-    </div>
     <a class="icon-btn" href="https://github.com/ririyad/ai-concepts" target="_blank" rel="noopener noreferrer" aria-label="GitHub repository (opens in a new tab)" title="View source on GitHub">
       <svg aria-hidden="true"><use href="#icon-github"/></svg>
     </a>
@@ -997,9 +989,6 @@ function renderQuiz(){
    Navigation + progress
    ============================================================ */
 function renderProgress(){
-  const p=document.getElementById('progress');
-  p.querySelector('i').style.width=(100*understood.size/DATA.length)+'%';
-  p.querySelector('span').textContent=understood.size===0?'Start with AI':`${understood.size}/${DATA.length} understood`;
   renderHint();
 }
 function renderHint(){
