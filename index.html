@@ -1,0 +1,917 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="description" content="A calm, interactive field guide to AI concepts: see how machine learning, LLMs, RAG, agents, and tools connect — with a guided path, practical walkthroughs, and a self-check quiz.">
+<meta name="color-scheme" content="light dark">
+<title>AI Atlas · See how it all connects</title>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%23101e27'/%3E%3Cpath d='M8 24 16 7 24 24M11 19h10' stroke='%23c7f36b' stroke-width='3' fill='none'/%3E%3C/svg%3E">
+<script>
+/* Apply saved theme before first paint to avoid a flash */
+try{const t=localStorage.getItem('atlas-theme');if(t==='dark')document.documentElement.dataset.theme='dark';else if(!t&&matchMedia('(prefers-color-scheme: dark)').matches)document.documentElement.dataset.theme='dark'}catch(e){}
+</script>
+<style>
+/* ---------- Design tokens ---------- */
+:root{
+  --bg:#f3f5f7; --paper:#ffffff; --paper-2:#f1f5f7; --ink:#162832; --muted:#586975;
+  --line:#dce3e7; --line-soft:#edf1f4; --line-2:#b9c9d2;
+  --accent:#c7f36b; --accent-deep:#5b8c1e; --accent-ink:#213916;
+  --dark:#10232d; --dark-2:#2a414c;
+  --tint:#eaf3da; --tint-ink:#2c4218; --hover:#eef3f5;
+  --wire:#a9b9c3; --dot:#d5dee3; --focus:#4c89e2; --ring:#e7eee380;
+  --ok:#3f8f4f; --bad:#c0534f;
+  --shadow:0 1px 2px rgba(16,35,45,.05),0 6px 18px rgba(16,35,45,.05);
+  --radius:12px;
+}
+[data-theme="dark"]{
+  --bg:#0d171d; --paper:#15242d; --paper-2:#1a2c36; --ink:#e3edf2; --muted:#93a7b1;
+  --line:#243945; --line-soft:#1d303b; --line-2:#33505e;
+  --accent:#c7f36b; --accent-deep:#a3d94e; --accent-ink:#c7f36b;
+  --dark:#0a141a; --dark-2:#1c313c;
+  --tint:#22331c; --tint-ink:#d6f3a1; --hover:#1c2f3a;
+  --wire:#3d5866; --dot:#21333d; --focus:#7dabf5; --ring:#c7f36b1f;
+  --ok:#6cc07e; --bad:#e0827e;
+  --shadow:0 1px 2px rgba(0,0,0,.35),0 8px 22px rgba(0,0,0,.28);
+}
+/* Group colors (light + dark variants) */
+[data-group="foundations"]{--group:#2864c5}
+[data-group="models"]{--group:#7953ad}
+[data-group="learning"]{--group:#ad5d12}
+[data-group="retrieval"]{--group:#007d78}
+[data-group="apps"]{--group:#33705d}
+[data-group="runtime"]{--group:#b44557}
+[data-group="tools"]{--group:#5463a6}
+[data-theme="dark"] [data-group="foundations"]{--group:#7aa8f0}
+[data-theme="dark"] [data-group="models"]{--group:#b39ddb}
+[data-theme="dark"] [data-group="learning"]{--group:#e0a05e}
+[data-theme="dark"] [data-group="retrieval"]{--group:#4fc9c2}
+[data-theme="dark"] [data-group="apps"]{--group:#6fbf9a}
+[data-theme="dark"] [data-group="runtime"]{--group:#e08a9b}
+[data-theme="dark"] [data-group="tools"]{--group:#97a5e0}
+
+/* ---------- Base ---------- */
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.55 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;transition:background-color .25s,color .25s}
+button,input,select{font:inherit}
+button,a,input,select,summary{-webkit-tap-highlight-color:transparent}
+button{cursor:pointer;color:inherit;border:0}
+a{color:#2864c5;text-underline-offset:3px}
+[data-theme="dark"] a{color:#8fb6f5}
+button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,summary:focus-visible{outline:3px solid var(--focus);outline-offset:3px}
+body,.panel,.map-card,.detail,.node,.term,.tab,.flow-choice,aside,header,.quiz-opt{transition:background-color .25s,border-color .25s,color .25s}
+.skip{position:absolute;top:-100px;left:20px;z-index:50;background:var(--paper);color:var(--ink);padding:12px;border-radius:0 0 8px 8px}
+.skip:focus{top:0}
+::selection{background:var(--accent);color:var(--accent-ink)}
+
+/* ---------- Header ---------- */
+header{height:70px;background:var(--dark);color:#fff;display:flex;align-items:center;justify-content:space-between;padding:0 32px;gap:18px}
+.brand{display:flex;align-items:center;gap:12px;font-weight:750;font-size:22px;letter-spacing:-.8px}
+.mark{width:34px;height:34px;border:1px solid var(--accent);border-radius:50%;display:grid;place-items:center;color:var(--accent);font-size:18px;flex-shrink:0}
+.brand span:last-child{font-weight:400;color:#acc1cb}
+.edition{font:12px ui-monospace,SFMono-Regular,Menlo,monospace;color:#b8c9d1;letter-spacing:1.5px;margin-right:auto}
+.header-tools{display:flex;align-items:center;gap:12px}
+.progress{display:flex;align-items:center;gap:10px;font:12px ui-monospace,Menlo,monospace;color:#b8c9d1;white-space:nowrap}
+.progress .bar{width:90px;height:5px;background:var(--dark-2);border-radius:99px;overflow:hidden}
+.progress .bar i{display:block;height:100%;background:var(--accent);border-radius:99px;transition:width .4s ease}
+.icon-btn{background:var(--dark-2);color:#fff;width:34px;height:34px;border-radius:8px;font-size:16px;display:grid;place-items:center;line-height:1}
+.icon-btn:hover{background:#3a5563}
+.mobile-menu{display:none}
+
+/* ---------- Shell / sidebar ---------- */
+.shell{display:grid;grid-template-columns:255px minmax(0,1fr);min-height:calc(100vh - 70px)}
+aside{background:var(--paper);border-right:1px solid var(--line);padding:24px 16px;position:sticky;top:0;height:100vh;overflow:auto;scrollbar-width:thin}
+.eyebrow{font:12px/1.5 ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:1.7px;text-transform:uppercase;color:var(--muted)}
+.searchbox{margin:16px 0 18px;position:relative}
+.searchbox input{width:100%;padding:11px 12px 11px 34px;border:1px solid var(--line);background:var(--paper-2);border-radius:8px;font-size:14px;color:var(--ink)}
+.searchbox input:focus{border-color:var(--focus)}
+.searchbox input::placeholder{color:var(--muted)}
+.searchbox span{position:absolute;left:12px;top:9px;color:var(--muted)}
+.cat{margin:6px 0 12px}
+.cat summary{list-style:none;cursor:pointer;display:flex;justify-content:space-between;align-items:center;font-size:13px;font-weight:650;letter-spacing:.3px;padding:7px;border-radius:6px}
+.cat summary:hover{background:var(--hover)}
+.cat summary::-webkit-details-marker{display:none}
+.cat summary:after{content:'−';color:var(--muted)}
+.cat:not([open]) summary:after{content:'+'}
+.cat-title{display:flex;gap:8px;align-items:center}
+.cat-count{font:11px ui-monospace,Menlo,monospace;color:var(--muted);font-weight:400}
+.dot{height:7px;width:7px;background:var(--group);border-radius:50%;display:inline-block;flex-shrink:0}
+.term{background:transparent;width:100%;text-align:left;padding:7px 10px 7px 23px;font-size:14px;border-radius:6px;color:var(--muted);display:flex;align-items:center;justify-content:space-between;gap:8px;line-height:1.4}
+.term:hover{background:var(--hover);color:var(--ink)}
+.term.active{background:var(--tint);color:var(--tint-ink);font-weight:650}
+.term .tick{color:var(--accent-deep);font-size:12px;opacity:0;flex-shrink:0}
+.term.known .tick{opacity:1}
+.sidebar-foot{border-top:1px solid var(--line);padding-top:18px;margin-top:20px;font-size:13px;color:var(--muted)}
+.random-btn{margin-top:12px;background:var(--paper-2);border:1px solid var(--line);border-radius:7px;padding:8px 12px;font-size:13px;font-weight:600;color:var(--ink);width:100%}
+.random-btn:hover{border-color:var(--line-2);background:var(--hover)}
+
+/* ---------- Main / intro / tabs ---------- */
+main{min-width:0;padding:28px 34px 50px;max-width:1700px;width:100%;margin:auto}
+.intro{display:flex;justify-content:space-between;align-items:flex-end;gap:20px;margin-bottom:22px}
+h1{font-size:clamp(27px,2.6vw,38px);line-height:1.2;letter-spacing:-1.3px;margin:7px 0 9px;font-weight:650}
+.intro p{margin:0;color:var(--muted);max-width:680px}
+.count{font:12px ui-monospace,Menlo,monospace;white-space:nowrap;background:var(--paper-2);border:1px solid var(--line);color:var(--muted);padding:9px 12px;border-radius:6px}
+.tabs{border-bottom:1px solid var(--line-2);display:flex;gap:24px;margin-bottom:26px;align-items:center}
+.tab{padding:13px 0;background:transparent;border-bottom:3px solid transparent;font-size:14px;color:var(--muted);font-weight:550;white-space:nowrap}
+.tab:hover{color:var(--ink)}
+.tab.active{color:var(--ink);border-color:var(--ink)}
+.tab b{font:12px ui-monospace,Menlo,monospace;color:var(--muted);margin-right:7px;font-weight:400}
+.tabs-hint{margin-left:auto;background:var(--tint);color:var(--tint-ink);border-radius:7px;padding:9px 14px;font-size:13px;font-weight:650;white-space:nowrap;margin-bottom:6px}
+.tabs-hint:hover{filter:brightness(.97)}
+
+/* ---------- Shared components ---------- */
+.panel,.map-card,.detail{background:var(--paper);border:1px solid var(--line);border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow)}
+.btn-primary{background:var(--accent);color:var(--accent-ink);border-radius:8px;padding:11px 20px;font-weight:700;font-size:14px}
+.btn-primary:hover{filter:brightness(.95)}
+.pill{border:1px solid var(--line);border-left:3px solid var(--group,#94a8b2);background:var(--paper-2);border-radius:6px;font-size:12px;padding:4px 9px;margin:3px 4px 0 0;color:var(--ink);display:inline-block}
+.pill:hover{background:var(--hover)}
+.pill.known:after{content:' ✓';color:var(--accent-deep);font-weight:700}
+.section-lead{max-width:780px;margin-bottom:26px}
+.section-lead h2{font-size:clamp(24px,2vw,30px);letter-spacing:-.8px;margin:0 0 8px;line-height:1.2}
+.section-lead p{color:var(--muted);margin:0}
+.meter{height:6px;background:var(--line-soft);border-radius:99px;overflow:hidden;flex:1}
+.meter i{display:block;height:100%;background:linear-gradient(90deg,var(--accent-deep),var(--accent));border-radius:99px;transition:width .4s ease}
+.meter.big{height:9px;margin:12px 0}
+
+/* ---------- Explore: taxonomy ---------- */
+.taxonomy{display:flex;flex-wrap:wrap;align-items:center;gap:9px;background:var(--paper-2);border:1px solid var(--line);padding:12px 17px;margin-bottom:20px;border-radius:9px;font-size:14px}
+.taxonomy button{background:none;font-weight:600;padding:0;text-decoration:underline;text-underline-offset:3px;text-decoration-color:var(--line-2)}
+.taxonomy button:hover{text-decoration-color:var(--ink)}
+.taxonomy span{color:var(--muted)}
+.taxonomy small{font-size:12px;margin-left:auto;color:var(--muted)}
+
+/* ---------- Explore: graph ---------- */
+.explore-grid{display:grid;grid-template-columns:minmax(0,1fr) 340px;gap:20px;align-items:start}
+.map-top{padding:20px 22px 0;display:flex;justify-content:space-between;gap:10px}
+.map-top h2{margin:3px 0 0;font-size:18px;font-weight:650;letter-spacing:-.3px}
+.map-top p{font-size:13px;color:var(--muted);margin:4px 0}
+.map-tag{font:11px ui-monospace,Menlo,monospace;color:var(--muted);white-space:nowrap;letter-spacing:1px}
+.graph{position:relative;min-height:490px;background-image:radial-gradient(var(--dot) .8px,transparent .8px);background-size:16px 16px;padding:22px 18px;display:grid;grid-template-columns:minmax(0,1fr) minmax(120px,.85fr) minmax(0,1fr);gap:16px;align-items:center}
+.wires{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;overflow:visible}
+.graph-col{display:flex;flex-direction:column;gap:22px;z-index:1;min-width:0}
+.node-wrap{text-align:center;animation:pop .28s ease both}
+.graph-col .node-wrap:nth-child(2){animation-delay:.05s}
+.graph-col .node-wrap:nth-child(3){animation-delay:.1s}
+.graph-col .node-wrap:nth-child(4){animation-delay:.15s}
+@keyframes pop{from{opacity:0;transform:translateY(7px)}to{opacity:1;transform:none}}
+.node{width:100%;padding:11px 8px;background:var(--paper);border:1px solid var(--line-2);border-left:3px solid var(--group);border-radius:8px;box-shadow:var(--shadow);font-size:14px;font-weight:600;line-height:1.3;overflow-wrap:anywhere;color:var(--ink);transition:transform .15s,border-color .15s,box-shadow .15s}
+.node:hover{transform:translateY(-2px);border-color:var(--group)}
+.node small{display:block;color:var(--muted);font:11px/1.4 ui-monospace,Menlo,monospace;margin-top:4px;font-weight:400}
+.relation{font-size:12px;line-height:1.35;background:var(--paper);border:1px solid var(--line-soft);border-radius:5px;padding:3px 7px;color:var(--muted);margin-bottom:6px;display:inline-block;max-width:100%}
+.center{background:var(--dark);color:#fff;border-color:var(--dark);padding:24px 8px;font-size:20px;border-radius:11px;position:relative;box-shadow:0 0 0 7px var(--ring)}
+.center small{color:var(--accent);font-size:11px;letter-spacing:1.5px;margin-bottom:8px;font-weight:650}
+.center p{font-size:12px;font-weight:400;color:#cfdae0;margin:9px 0 0}
+.empty-graph{font-size:13px;color:var(--muted);text-align:center;padding:0 6px}
+.map-bottom{padding:13px 20px;border-top:1px solid var(--line);font-size:12px;color:var(--muted);display:flex;gap:12px;justify-content:space-between;align-items:center}
+.edge-count{background:none;color:var(--muted);font:12px ui-monospace,Menlo,monospace;padding:0;text-decoration:underline;text-underline-offset:3px;text-decoration-color:var(--line-2)}
+.edge-count:hover{color:var(--ink)}
+
+/* ---------- Explore: detail panel ---------- */
+.detail{padding:24px 24px 22px;position:sticky;top:16px}
+.detail>*{animation:pop .25s ease both}
+.badge{display:inline-block;font:11px ui-monospace,Menlo,monospace;text-transform:uppercase;letter-spacing:.8px;color:var(--group);background:color-mix(in srgb,var(--group) 10%,transparent);border:1px solid color-mix(in srgb,var(--group) 28%,transparent);padding:5px 9px;border-radius:5px}
+.detail h2{font-size:28px;margin:13px 0 3px;letter-spacing:-.7px;line-height:1.16;overflow-wrap:anywhere}
+.full-name{font-size:13px;color:var(--muted);margin-bottom:14px}
+.plain{background:var(--tint);color:var(--tint-ink);border-radius:9px;padding:13px 15px;font-size:15px;line-height:1.55;margin:0 0 15px}
+.plain b{display:block;font:10px ui-monospace,Menlo,monospace;letter-spacing:1.6px;text-transform:uppercase;margin-bottom:4px;opacity:.7}
+.detail p{margin:0 0 14px;font-size:15px;line-height:1.65}
+.detail h3{font:11px ui-monospace,Menlo,monospace;text-transform:uppercase;letter-spacing:1.5px;color:var(--muted);margin:20px 0 8px}
+.detail-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:16px}
+.gotit{border:1px solid var(--line-2);background:var(--paper);border-radius:7px;padding:8px 14px;font-size:13px;font-weight:650}
+.gotit:hover{border-color:var(--accent-deep)}
+.gotit.on{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.copylink{background:none;border:1px solid var(--line);border-radius:7px;padding:8px 14px;font-size:13px;color:var(--muted)}
+.copylink:hover{color:var(--ink);border-color:var(--line-2)}
+.example{background:var(--paper-2);border-left:3px solid var(--line-2);padding:12px 13px;border-radius:0 6px 6px 0;font-size:14px;line-height:1.6}
+.caution{font-size:14px;line-height:1.6;color:var(--muted)}
+.source-links{font-size:13px;margin-top:18px;padding-top:15px;border-top:1px solid var(--line)}
+.source-links a{display:inline-block;margin:0 9px 6px 0}
+.connections{margin-top:20px;padding:20px 22px}
+.connections h3{font-size:16px;margin:0 0 12px;letter-spacing:-.2px}
+.edge-row{display:flex;gap:8px;align-items:center;padding:9px 0;border-top:1px solid var(--line-soft);font-size:14px;flex-wrap:wrap}
+.edge-row .pill{margin:0}
+.edge-row span{color:var(--muted);font-size:13px}
+
+/* ---------- Guided path ---------- */
+.path-overview{max-width:860px;padding:20px 24px;margin-bottom:22px}
+.path-overview p{margin:10px 0 0;font-size:14px;color:var(--muted)}
+.path-overview b{font-size:17px}
+.path{display:grid;gap:14px;max-width:860px}
+.path-step{display:grid;grid-template-columns:46px 1fr;gap:18px;padding:20px 22px}
+.path-step .step-no{border:1.5px solid var(--line-2);border-radius:50%;width:40px;height:40px;display:grid;place-items:center;font:14px ui-monospace,Menlo,monospace;color:var(--muted);background:var(--paper);flex-shrink:0}
+.path-step.done .step-no{background:var(--accent);border-color:var(--accent);color:var(--accent-ink);font-weight:700}
+.path-step h3{margin:8px 0 5px;font-size:18px;letter-spacing:-.3px}
+.path-step>p,.path-step .why{font-size:14px;color:var(--muted);margin:0 0 6px}
+.chips{display:flex;flex-wrap:wrap;margin:8px 0 10px}
+.chips .pill{font-size:13px;padding:5px 11px}
+.step-meter{display:flex;align-items:center;gap:10px;font:11px ui-monospace,Menlo,monospace;color:var(--muted)}
+
+/* ---------- Flows ---------- */
+.flow-layout{display:grid;grid-template-columns:245px minmax(0,1fr);gap:22px}
+.flow-menu{display:flex;flex-direction:column;gap:8px}
+.flow-choice{text-align:left;background:var(--paper);border:1px solid var(--line);border-radius:9px;padding:14px 16px;font-weight:650;font-size:14px;box-shadow:var(--shadow)}
+.flow-choice:hover{border-color:var(--line-2)}
+.flow-choice.active{background:var(--dark);color:#fff;border-color:var(--dark)}
+[data-theme="dark"] .flow-choice.active{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+.flow-choice span{display:block;font-size:12px;opacity:.65;margin-top:4px;font-weight:400}
+.flow-content{padding:26px 30px}
+.flow-content h3{font-size:23px;margin:2px 0 10px;letter-spacing:-.5px}
+.flow-content>p{color:var(--muted);margin:0}
+.flow-steps{margin:26px 0}
+.step{display:grid;grid-template-columns:34px 1fr;gap:14px;position:relative;padding-bottom:26px}
+.step:not(:last-child):before{content:'';position:absolute;left:15px;top:32px;width:2px;bottom:0;background:var(--line)}
+.step-no{border:1px solid var(--line-2);border-radius:50%;width:32px;height:32px;display:grid;place-items:center;font:12px ui-monospace,Menlo,monospace;color:var(--muted);background:var(--paper)}
+.step h4{font-size:16px;margin:2px 0 5px}
+.step p{font-size:15px;color:var(--muted);margin:0 0 8px}
+.flow-note{padding:15px 17px;background:var(--tint);color:var(--tint-ink);border-radius:8px;font-size:14px;line-height:1.6}
+
+/* ---------- Compare ---------- */
+.compare-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}
+.compare-card{padding:22px 24px}
+.compare-card h3{font-size:19px;letter-spacing:-.4px;margin:0 0 14px}
+.compare-card h3 span{font-size:13px;color:var(--muted);font-weight:400;margin:0 6px}
+.compare-card p{font-size:15px;line-height:1.65;color:var(--muted);margin:0 0 14px}
+.verdict{padding:12px 0 0 14px;border-top:1px solid var(--line);border-left:3px solid var(--accent);font-size:14px;font-weight:550;line-height:1.5;padding-top:12px}
+
+/* ---------- Quiz ---------- */
+.quiz-shell{max-width:740px;margin:auto}
+.quiz-meta{display:flex;justify-content:space-between;align-items:center;font:12px ui-monospace,Menlo,monospace;color:var(--muted);margin-bottom:10px;padding:0 2px}
+.quiz-dots{display:flex;gap:6px}
+.quiz-dots i{width:8px;height:8px;border-radius:50%;background:var(--line-2);display:block}
+.quiz-dots i.ok{background:var(--ok)}
+.quiz-dots i.bad{background:var(--bad)}
+.quiz-dots i.cur{outline:2px solid var(--focus);outline-offset:2px}
+.quiz-card{padding:28px 30px}
+.quiz-label{font-size:14px;color:var(--muted);margin-bottom:6px}
+.quiz-label b{color:var(--ink)}
+.quiz-def{font-size:17px;line-height:1.6;border-left:3px solid var(--accent);padding:8px 14px;margin:12px 0 4px;background:var(--paper-2);border-radius:0 8px 8px 0}
+.quiz-opts{display:grid;gap:10px;margin-top:20px}
+.quiz-opt{text-align:left;padding:13px 16px;border:1px solid var(--line);border-radius:9px;background:var(--paper);font-size:15px;line-height:1.5;color:var(--ink)}
+.quiz-opt:not(:disabled):hover{border-color:var(--ink)}
+.quiz-opt:disabled{cursor:default;opacity:.75}
+.quiz-opt.correct{border-color:var(--ok);background:color-mix(in srgb,var(--ok) 12%,transparent);opacity:1;font-weight:600}
+.quiz-opt.wrong{border-color:var(--bad);background:color-mix(in srgb,var(--bad) 10%,transparent);opacity:1}
+.quiz-feedback{margin-top:18px;padding:14px 16px;border-radius:9px;font-size:14px;line-height:1.6;background:var(--tint);color:var(--tint-ink)}
+.quiz-feedback.no{background:color-mix(in srgb,var(--bad) 9%,transparent);color:var(--ink)}
+.quiz-feedback .pill{margin:8px 0 0}
+.quiz-next{margin-top:18px;width:100%}
+.quiz-start{text-align:center;max-width:560px;margin:auto;padding:36px 30px}
+.quiz-start h3{font-size:22px;margin:0 0 8px;letter-spacing:-.4px}
+.quiz-start p{color:var(--muted);margin:0 0 20px;font-size:15px}
+.quiz-score{font-size:46px;font-weight:750;letter-spacing:-2px;margin:6px 0}
+.quiz-missed{margin-top:16px;text-align:left}
+.quiz-missed p{font-size:14px;margin:0 0 4px;color:var(--muted)}
+
+/* ---------- Sources / footer ---------- */
+.source-panel{margin-top:28px;padding:21px 24px;background:var(--paper-2);border:1px solid var(--line);border-radius:10px;font-size:14px}
+.source-panel summary{cursor:pointer;font-weight:650}
+.source-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px 24px;margin:20px 0}
+.source-grid a{font-size:14px}
+.source-panel p{font-size:13px;color:var(--muted)}
+footer{display:flex;justify-content:space-between;gap:15px;color:var(--muted);font-size:12px;margin-top:26px}
+.no-results{font-size:14px;padding:12px;color:var(--muted)}
+[hidden]{display:none!important}
+noscript{display:block;padding:20px;text-align:center;font-weight:650}
+
+/* ---------- Responsive ---------- */
+@media(min-width:1500px){.graph{min-height:500px}.node{padding:14px 10px}.explore-grid{grid-template-columns:minmax(0,1fr) 380px}}
+@media(max-width:1200px){
+  .shell{grid-template-columns:220px minmax(0,1fr)}
+  aside{padding:22px 12px}
+  main{padding:25px 22px}
+  .explore-grid{grid-template-columns:minmax(0,1fr)}
+  .detail{position:static;display:grid;grid-template-columns:1fr 1fr;gap:0 28px}
+  .detail .definition{grid-row:span 2}
+  .detail .source-links{grid-column:1/-1}
+  .graph{min-height:400px}
+  .graph-col{gap:18px}
+  .node{padding:12px;font-size:15px}
+  .center{font-size:23px}
+  .flow-layout{grid-template-columns:195px 1fr}
+}
+@media(max-width:760px){
+  header{height:62px;padding:0 16px;gap:10px}
+  .brand{font-size:19px}
+  .edition{display:none}
+  .progress span{display:none}
+  .progress .bar{width:56px}
+  .shell{display:block}
+  aside{position:static;height:auto;padding:14px 18px;display:none;border-right:0;border-bottom:1px solid var(--line)}
+  aside.open{display:block}
+  .sidebar-foot{display:none}
+  .mobile-menu{display:grid}
+  .cat .term{display:inline-flex;width:auto;padding:7px 11px;margin:2px}
+  .cat{margin-bottom:8px}
+  main{padding:22px 16px}
+  .intro{display:block;margin-bottom:16px}
+  .count{display:none}
+  .intro p{font-size:15px}
+  .tabs{gap:18px;overflow-x:auto;margin-bottom:18px}
+  .tabs-hint{display:none}
+  .tab{font-size:13px}
+  .tab b{display:none}
+  .taxonomy{gap:7px;font-size:12px;padding:11px}
+  .taxonomy small{width:100%;margin-left:0}
+  .graph{padding:18px 10px;gap:9px;grid-template-columns:minmax(0,1fr) minmax(90px,.82fr) minmax(0,1fr);min-height:440px}
+  .node{font-size:12px;padding:10px 5px}
+  .node small{font-size:10px}
+  .center{font-size:16px;padding:20px 5px}
+  .center p{font-size:11px}
+  .center small{font-size:9px}
+  .relation{font-size:11px}
+  .graph-col{gap:14px}
+  .detail{display:block;padding:22px}
+  .map-top{padding:17px 16px 0}
+  .map-top h2{font-size:16px}
+  .map-tag{display:none}
+  .map-bottom{display:block;font-size:12px}
+  .map-bottom span,.map-bottom .edge-count{display:block;margin-top:4px}
+  .flow-layout{display:block}
+  .flow-menu{flex-direction:row;overflow-x:auto;margin-bottom:18px}
+  .flow-choice{min-width:185px;font-size:14px;padding:10px 12px}
+  .flow-content{padding:22px 19px}
+  .path-step{grid-template-columns:38px 1fr;gap:12px;padding:16px}
+  .path-step .step-no{width:34px;height:34px;font-size:12px}
+  .compare-grid{grid-template-columns:1fr}
+  .source-grid{grid-template-columns:1fr}
+  footer{display:block}
+  .quiz-card{padding:22px 18px}
+  .section-lead h2{font-size:24px}
+}
+@media(prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important;scroll-behavior:auto!important}}
+@media print{
+  header{background:#fff;color:#000}
+  aside,.tabs,.mobile-menu,.wires,.header-tools,.detail-actions{display:none}
+  .shell{display:block}
+  main{padding:0}
+  .explore-grid{display:block}
+  .detail{position:static;break-inside:avoid}
+  .graph{min-height:360px}
+  .panel{break-inside:avoid}
+  .source-panel{display:none}
+}
+</style>
+</head>
+<body>
+<noscript>AI Atlas is an interactive guide and needs JavaScript to run.</noscript>
+<a class="skip" href="#main">Skip to content</a>
+
+<header>
+  <div class="brand"><div class="mark" aria-hidden="true">A</div>AI ATLAS <span>/</span></div>
+  <div class="edition">A FIELD GUIDE TO CONNECTED IDEAS</div>
+  <div class="header-tools">
+    <div class="progress" id="progress" role="status" aria-live="polite" title="Concepts you have marked as understood">
+      <div class="bar" aria-hidden="true"><i style="width:0%"></i></div><span></span>
+    </div>
+    <button class="icon-btn" id="theme" aria-label="Toggle dark mode" title="Toggle dark mode">☾</button>
+    <button class="icon-btn mobile-menu" id="menu" aria-expanded="false" aria-controls="sidebar" aria-label="Browse terms">☰</button>
+  </div>
+</header>
+
+<div class="shell">
+  <aside id="sidebar">
+    <div class="eyebrow">The concept index</div>
+    <div class="searchbox"><span aria-hidden="true">⌕</span><input id="search" type="search" placeholder="Find a term…  ( press / )" aria-label="Search AI concepts"></div>
+    <nav id="terms" aria-label="AI concepts"></nav>
+    <div class="sidebar-foot">
+      Start anywhere. Follow a connection.<br>Every term is part of a bigger picture.
+      <button class="random-btn" data-random>↻ Open a random concept</button>
+    </div>
+  </aside>
+
+  <main id="main">
+    <div class="intro">
+      <div>
+        <div class="eyebrow">Understand the parts. Connect the whole.</div>
+        <h1>See how AI fits together.</h1>
+        <p>A calm, practical map of the ideas behind modern AI — what each piece does, and how the pieces connect.</p>
+      </div>
+      <div class="count" id="count"></div>
+    </div>
+
+    <nav class="tabs" aria-label="Guide views">
+      <button class="tab active" data-view="explore" aria-current="page"><b>01</b>Concept map</button>
+      <button class="tab" data-view="path"><b>02</b>Guided path</button>
+      <button class="tab" data-view="flows"><b>03</b>In practice</button>
+      <button class="tab" data-view="compare"><b>04</b>Common mix-ups</button>
+      <button class="tab" data-view="quiz"><b>05</b>Check yourself</button>
+      <button class="tabs-hint" data-view="path">Feeling overwhelmed? Start the guided path →</button>
+    </nav>
+
+    <section id="explore">
+      <div class="taxonomy">
+        <button data-id="ai">Artificial intelligence</button><span>⊃</span>
+        <button data-id="ml">Machine learning</button><span>⊃</span>
+        <button data-id="dl">Deep learning</button>
+        <small>⊃ means “contains” · only one part of the landscape</small>
+      </div>
+      <div class="explore-grid">
+        <div>
+          <section class="map-card">
+            <div class="map-top">
+              <div>
+                <div class="eyebrow">Relationship map</div>
+                <h2 id="map-title"></h2>
+                <p>Read left → right. Select a concept to follow it.</p>
+              </div>
+              <span class="map-tag">CONNECTED VIEW</span>
+            </div>
+            <div class="graph" id="graph"></div>
+            <div class="map-bottom">
+              <span>Arrows show the labeled relationship, not always a data flow.</span>
+              <button class="edge-count" id="edge-count" data-scroll="connections-panel"></button>
+            </div>
+          </section>
+          <section class="panel connections" id="connections-panel">
+            <h3>Every direct connection</h3>
+            <div id="connections"></div>
+          </section>
+        </div>
+        <article class="detail" id="detail" aria-label="Selected concept"></article>
+      </div>
+    </section>
+
+    <section id="path" hidden></section>
+    <section id="flows" hidden></section>
+    <section id="compare" hidden></section>
+    <section id="quiz" hidden></section>
+
+    <details class="source-panel">
+      <summary>Sources &amp; how to read this guide</summary>
+      <p>This is a curated conceptual guide, not an exhaustive taxonomy. Categories organize learning; concepts can overlap. Examples are illustrative. “Agent” and “foundation model” have context-dependent definitions. Primary papers and official documentation are linked below and beside relevant concepts.</p>
+      <div class="source-grid" id="sources"></div>
+      <p>Concepts reviewed September 2026. No live model calls are made by this guide. System walkthroughs describe example architectures. Progress is stored only in your browser.</p>
+    </details>
+
+    <footer>
+      <span>AI ATLAS · A reference for curious builders</span>
+      <span>Fields ≠ architectures ≠ application patterns ≠ products</span>
+    </footer>
+  </main>
+</div>
+
+<script>
+'use strict';
+/* ============================================================
+   AI Atlas — data
+   Each concept: id, short name, full name, group, kind,
+   definition, plain-language line, example, distinction, refs.
+   ============================================================ */
+const GROUPS=[['foundations','Foundations'],['models','Models & architectures'],['learning','Training & adaptation'],['retrieval','Knowledge & retrieval'],['apps','Applications & agents'],['runtime','Inference & reliability'],['tools','Tools & ecosystem']];
+
+const SOURCES={
+  hub:['Hugging Face · Hub documentation','https://huggingface.co/docs/hub/index'],
+  hflib:['Hugging Face · Transformers documentation','https://huggingface.co/docs/transformers/index'],
+  mcp:['MCP · Introduction','https://modelcontextprotocol.io/introduction'],
+  pytorch:['PyTorch · Learn the basics','https://docs.pytorch.org/tutorials/beginner/basics/intro.html'],
+  langgraph:['LangGraph · Overview','https://docs.langchain.com/oss/python/langgraph/overview'],
+  pgvector:['pgvector · Project documentation','https://github.com/pgvector/pgvector'],
+  course:['Hugging Face · LLM course','https://huggingface.co/learn/llm-course/chapter1/1'],
+  transformer:['Attention Is All You Need · original paper','https://arxiv.org/abs/1706.03762'],
+  rag:['Retrieval-Augmented Generation · original paper','https://arxiv.org/abs/2005.11401'],
+  agents:['Anthropic · Building effective agents','https://www.anthropic.com/engineering/building-effective-agents'],
+  vlm:['Hugging Face · Vision language models','https://huggingface.co/blog/vlms'],
+  vectors:['Qdrant · Vector database concepts','https://qdrant.tech/documentation/concepts/'],
+  sentence:['Sentence Transformers · documentation','https://www.sbert.net/'],
+  lora:['Hugging Face · LoRA explained','https://huggingface.co/docs/peft/main/en/conceptual_guides/lora'],
+  diffusion:['Hugging Face · Diffusers','https://huggingface.co/docs/diffusers/index']
+};
+
+const DATA=[
+{id:'ai',name:'AI',full:'Artificial intelligence',group:'foundations',kind:'Field',def:'The broad field of building systems that perform tasks associated with intelligence: perception, language, planning, reasoning, and decision-making.',plain:'Any system that does things we’d call intelligent — the biggest umbrella of all.',example:'A rule-based chess program and a learned image recognizer are both AI systems.',caution:'AI does not require machine learning. Symbolic rules, search, and planning are also AI approaches.',refs:['course']},
+{id:'ml',name:'Machine learning',full:'ML',group:'foundations',kind:'Subfield',def:'Methods that learn useful patterns from data to make predictions or decisions, instead of encoding every decision rule by hand.',plain:'Systems that find patterns in examples instead of following hand-written rules.',example:'Learn from historical orders to predict delivery delays.',caution:'ML includes linear models and decision trees; it is much broader than deep learning or chatbots.',refs:['course']},
+{id:'dl',name:'Deep learning',full:'DL',group:'foundations',kind:'ML approach',def:'Machine learning using neural networks with multiple layers to learn increasingly useful representations of data.',plain:'Machine learning powered by large, layered neural networks.',example:'A network learns features from pixels for defect detection.',caution:'Deep learning can classify, forecast, embed, or generate. It is not synonymous with generative AI.',refs:['course']},
+{id:'nn',name:'Neural network',full:'A parameterized computational model',group:'foundations',kind:'Model family',def:'A network of mathematical operations with learned parameters that transforms inputs into outputs. Training adjusts these parameters to improve an objective.',plain:'A web of simple math units whose settings are learned from data.',example:'A small network maps order features to a late-delivery probability.',caution:'The brain analogy is loose. Artificial neurons are mathematical units, not faithful simulations of human neurons.',refs:[]},
+{id:'genai',name:'Generative AI',full:'Models that produce content',group:'foundations',kind:'Capability family',def:'AI systems that learn patterns in data and use them to produce text, images, audio, video, or other outputs.',plain:'AI that creates new content — text, images, audio, video.',example:'An LLM drafts an explanation; a diffusion model creates an image.',caution:'Generating fluent or realistic content does not establish truth or understanding. Not all AI is generative.',refs:['diffusion']},
+{id:'nlp',name:'NLP',full:'Natural language processing',group:'foundations',kind:'Task field',def:'Methods for processing human language, including classification, extraction, translation, retrieval, and generation.',plain:'Getting computers to work with human language.',example:'Extract supplier names from contracts or classify customer messages.',caution:'NLP includes rule-based and statistical techniques as well as LLMs.',refs:['course']},
+{id:'cv',name:'Computer vision',full:'Machine perception of visual data',group:'foundations',kind:'Task field',def:'Methods that extract information from images and video: recognizing, locating, tracking, or segmenting visual content.',plain:'Getting computers to interpret images and video.',example:'Find damaged items in warehouse photos.',caution:'A vision model may output labels or masks without understanding or generating language.',refs:['vlm']},
+{id:'symbolic',name:'Symbolic AI',full:'Rules, search, and explicit representations',group:'foundations',kind:'AI approach',def:'AI based on explicitly represented facts, rules, constraints, and search procedures.',plain:'AI built from explicit rules and logic, written by people.',example:'A rule engine checks whether a purchase requires approval.',caution:'Symbolic and learned approaches can be combined. A reliable business rule need not be delegated to a language model.',refs:[]},
+{id:'transformer',name:'Transformer',full:'Attention-based neural architecture',group:'models',kind:'Architecture',def:'A neural-network architecture built around attention and feed-forward blocks, with ways to represent position. It supports language, vision, and other tasks.',plain:'The architecture behind nearly every modern AI model.',example:'A decoder transformer predicts the next token in a text sequence.',caution:'Transformer is an architecture. Hugging Face Transformers is a software library supporting many model architectures.',refs:['transformer']},
+{id:'attention',name:'Attention',full:'Context-dependent information mixing',group:'models',kind:'Mechanism',def:'A mechanism that weights and combines representations according to their relevance to a query. Self-attention relates positions within the same sequence.',plain:'How a model decides which words matter to which other words.',example:'The representation of “bank” changes when nearby words describe a river rather than money.',caution:'Attention weights do not by themselves prove a faithful explanation of a model’s decision.',refs:['transformer']},
+{id:'llm',name:'LLM',full:'Large language model',group:'models',kind:'Model family',def:'A large neural language model trained on extensive text or token sequences. Generative LLMs produce text by repeatedly predicting a next-token distribution.',plain:'A big model trained on text that predicts what comes next — the engine inside chatbots.',example:'Given an API specification and a request, draft a client function and explain it.',caution:'An LLM is one component. Retrieval, tool execution, permissions, and persistent memory come from the surrounding application.',refs:['course']},
+{id:'foundation',name:'Foundation model',full:'Broadly pretrained, adaptable model',group:'models',kind:'Model category',def:'A model trained on broad data that can be adapted to many downstream tasks. The category can include language, vision, and multimodal models.',plain:'One big pretrained model you can adapt to many different jobs.',example:'Use the same pretrained language model for summarization, extraction, and question answering.',caution:'Foundation model describes breadth and reuse, not one architecture. Not every ML model qualifies.',refs:[]},
+{id:'multimodal',name:'Multimodal model',full:'A model spanning multiple data modalities',group:'models',kind:'Model category',def:'A model that processes or relates more than one kind of data, such as text, images, audio, or video.',plain:'A model that works with more than one kind of data, like text plus images.',example:'Answer a question using both a picture and a spoken instruction.',caution:'Multimodal does not mean every input or output type is supported. Capabilities depend on the specific model.',refs:['vlm']},
+{id:'vlm',name:'VLM',full:'Vision-language model',group:'models',kind:'Model family',def:'A model that connects visual information with language. Some align image and text representations; others generate text from images and prompts.',plain:'A model that can look at a picture and talk about it.',example:'Ask a model to explain a chart shown in an image.',caution:'VLM is broader than a chatbot with vision. Contrastive image–text models can support retrieval without generating answers.',refs:['vlm']},
+{id:'encoder',name:'Encoder',full:'Input to useful representations',group:'models',kind:'Architecture component',def:'A component that transforms input into representations. Transformer encoders can use bidirectional context; image encoders extract visual features.',plain:'The part that reads input and turns it into useful internal numbers.',example:'Encode a sentence into representations useful for classification or semantic search.',caution:'An encoder does not automatically yield a good sentence embedding: pooling and task-specific training matter.',refs:['transformer']},
+{id:'decoder',name:'Decoder',full:'Representations to output sequence',group:'models',kind:'Architecture component',def:'A component that produces outputs. Autoregressive transformer decoders use causal attention to generate one token after another.',plain:'The part that writes the answer, one piece at a time.',example:'Generate a summary token by token while conditioning on the prompt.',caution:'“Decoder” has meanings beyond LLMs. In encoder–decoder models it can also attend to encoder outputs.',refs:['transformer']},
+{id:'diffusion',name:'Diffusion model',full:'Generation through learned denoising',group:'models',kind:'Model family',def:'A generative model trained to reverse a noising process. At generation time, it progressively transforms noise into a structured sample.',plain:'How most image generators work: start from noise, clean it up step by step.',example:'Create an illustration conditioned on a text description.',caution:'Diffusion describes a modeling approach; a transformer can be used inside it. It is not the only approach to image generation.',refs:['diffusion']},
+{id:'moe',name:'Mixture of experts',full:'MoE',group:'models',kind:'Architecture pattern',def:'An architecture with specialized subnetworks and a routing mechanism that selects which experts process an input. Sparse MoE activates only a subset per token.',plain:'A big model where only a few “expert” parts run per token, saving compute.',example:'Different tokens are routed through different feed-forward experts.',caution:'Experts are learned subnetworks, not separate autonomous agents. Total parameters differ from active parameters.',refs:[]},
+{id:'reasoning',name:'Reasoning model',full:'Models that spend extra compute on intermediate steps',group:'models',kind:'Model family',def:'A model trained or configured to generate intermediate reasoning steps before its final answer, trading extra computation and latency for better performance on multi-step problems.',plain:'A model that “thinks longer,” working through steps before answering.',example:'A model works through a multi-step math or planning problem before stating its conclusion.',caution:'Longer reasoning does not guarantee a correct or faithful chain. Verify important outputs as usual.',refs:[]},
+{id:'training',name:'Training',full:'Learning model parameters',group:'learning',kind:'Process',def:'Optimize a model’s parameters against an objective using data, commonly through gradient-based updates.',plain:'Adjusting a model’s internal numbers until it performs well.',example:'Use input–target examples to reduce prediction error over many batches.',caution:'Training changes model parameters. Sending a prompt to a model usually does not.',refs:[]},
+{id:'pretrain',name:'Pretraining',full:'Learning broadly before task adaptation',group:'learning',kind:'Training stage',def:'Initial large-scale training that develops reusable representations or capabilities before more specialized adaptation.',plain:'The expensive first training on broad data — where general ability comes from.',example:'A language model learns to predict tokens across a large corpus.',caution:'Pretraining is expensive at large scale. Application builders usually start with an existing pretrained model.',refs:[]},
+{id:'finetune',name:'Fine-tuning',full:'Further training of an existing model',group:'learning',kind:'Adaptation process',def:'Continue training a pretrained model on selected data to change its behavior or task performance. Parameters or added adapters are updated.',plain:'Extra training on your own examples to steer an existing model.',example:'Train on reviewed examples of your preferred structured extraction output.',caution:'Fine-tuning is not a dependable replacement for retrieving frequently changing facts. RAG and fine-tuning can be combined.',refs:['lora']},
+{id:'sft',name:'SFT',full:'Supervised fine-tuning',group:'learning',kind:'Training method',def:'Fine-tuning on example inputs paired with desired outputs, often to teach instruction following or a specific response style.',plain:'Teaching by example: show prompts paired with ideal answers.',example:'Train on prompt–answer pairs showing how to explain procurement rules clearly.',caution:'High-quality representative examples matter; imitation of outputs is not a guarantee of reasoning or correctness.',refs:[]},
+{id:'lora',name:'LoRA / PEFT',full:'Low-rank adaptation / parameter-efficient fine-tuning',group:'learning',kind:'Adaptation technique',def:'PEFT updates a small fraction of trainable parameters. LoRA is one method that learns low-rank updates while keeping base weights frozen during training.',plain:'Train a tiny add-on instead of the whole model — much cheaper.',example:'Adapt an existing model using a small set of trainable adapter matrices.',caution:'LoRA reduces training resource needs, but total memory still includes the base model and training state. LoRA is one type of PEFT.',refs:['lora']},
+{id:'supervised',name:'Supervised learning',full:'Learning from targets',group:'learning',kind:'Learning paradigm',def:'Learn a mapping from inputs to known targets, such as class labels or numeric values.',plain:'Learning from examples that come with the right answers attached.',example:'Predict late vs on-time delivery using labeled historical orders.',caution:'Targets can be human-provided or derived from data. Supervised learning is not limited to neural networks.',refs:[]},
+{id:'unsupervised',name:'Unsupervised learning',full:'Learning structure without task labels',group:'learning',kind:'Learning paradigm',def:'Find structure in data without externally supplied target labels for the task. Common examples include clustering and dimensionality reduction.',plain:'Finding structure in data with no right answers provided.',example:'Group suppliers by similar purchasing patterns without preassigned segments.',caution:'Clusters reflect the chosen features and algorithm; they are not automatically meaningful business categories.',refs:[]},
+{id:'selfsupervised',name:'Self-supervised learning',full:'Targets derived from the data itself',group:'learning',kind:'Learning paradigm',def:'Learn from prediction tasks whose targets are constructed from the input data, such as predicting masked or following tokens.',plain:'The data quizzes itself — e.g. “predict the next word.”',example:'Use every text sequence to form many next-token prediction examples.',caution:'Often grouped under unsupervised learning, but the training objective still supplies concrete prediction targets.',refs:[]},
+{id:'rl',name:'Reinforcement learning',full:'Learning through rewards',group:'learning',kind:'Learning paradigm',def:'Train a policy to choose actions that improve expected reward through interaction with an environment or feedback process.',plain:'Learning by trial and error, guided by rewards.',example:'A simulated robot learns a movement policy from task rewards.',caution:'An LLM application that uses tools is not necessarily trained with reinforcement learning.',refs:[]},
+{id:'rlhf',name:'RLHF',full:'Reinforcement learning from human feedback',group:'learning',kind:'Alignment approach',def:'Use human preference feedback to construct a training signal, commonly a learned reward model, then optimize a model’s behavior with reinforcement learning.',plain:'People rank answers; the model learns to prefer what people preferred.',example:'People rank answers; preference information helps train responses that better match their judgments.',caution:'Preference alignment does not guarantee truth. Other preference methods, such as DPO, do not require the same RL pipeline.',refs:[]},
+{id:'weights',name:'Parameters / weights',full:'The learned numeric state',group:'learning',kind:'Model state',def:'Numbers that determine a model’s computations. Training adjusts trainable parameters; saved parameter values form a checkpoint.',plain:'The learned numbers that are the model.',example:'Load a checkpoint containing billions of learned numerical values.',caution:'Parameters are not a searchable collection of source documents. A parameter count alone does not determine quality.',refs:[]},
+{id:'distillation',name:'Distillation',full:'Training a student from a teacher',group:'learning',kind:'Training technique',def:'Train a model using signals from another model, such as outputs, probabilities, or representations, often to transfer capabilities into a smaller model.',plain:'Teaching a small model to imitate a bigger one.',example:'Train a compact classifier using high-quality labels generated by a larger teacher model.',caution:'Distillation requires training; quantization changes numerical representation. They can be combined.',refs:[]},
+{id:'embeddings',name:'Embeddings',full:'Learned vector representations',group:'retrieval',kind:'Representation',def:'Numeric vectors that represent items such as tokens, texts, or images. Similarity is useful when the model and training objective make relevant items close.',plain:'Turning things into coordinates, so “similar meaning” becomes “nearby points.”',example:'“Refund policy” and “How do I get my money back?” may map to nearby text vectors.',caution:'Similarity is not truth. Vectors from unrelated embedding models are generally not directly comparable.',refs:['sentence']},
+{id:'embedmodel',name:'Embedding model',full:'Content to comparison-ready vectors',group:'retrieval',kind:'Model role',def:'A model trained to produce vectors suitable for tasks like retrieval, clustering, or matching. Query and document encodings must be compatible.',plain:'The model that makes those meaning-coordinates for search and matching.',example:'Encode each policy chunk and a user question into the same retrieval space.',caution:'Internal token embeddings in an LLM are not automatically good standalone document embeddings.',refs:['sentence']},
+{id:'vectordb',name:'Vector database',full:'Storage and search for vectors',group:'retrieval',kind:'Infrastructure',def:'A database or database capability that stores vectors and metadata and supports similarity search, often with filters and approximate indexes.',plain:'A database built to find the closest vectors, fast.',example:'Find the closest policy vectors while filtering to documents this user may access.',caution:'It stores and retrieves representations; it does not itself understand or generate an answer. A dedicated vector database is optional.',refs:['vectors']},
+{id:'semantic',name:'Semantic search',full:'Retrieval using learned representations',group:'retrieval',kind:'Retrieval method',def:'Search by representations of meaning or relevance, often using embeddings instead of relying only on exact word overlap.',plain:'Search that matches meaning, not just exact words.',example:'Find “annual leave” content for a question about vacation allowance.',caution:'Embedding similarity can miss exact identifiers. Lexical search and metadata filters remain useful.',refs:['sentence']},
+{id:'hybrid',name:'Hybrid search',full:'Combining lexical and semantic retrieval',group:'retrieval',kind:'Retrieval method',def:'Combine keyword-based and vector-based candidate retrieval, then merge or rerank the results.',plain:'Keyword search and meaning search, teaming up.',example:'Find the exact purchase order PO-204 and policy passages related to delayed shipments.',caution:'Score scales can differ between retrieval methods; merging needs an explicit strategy.',refs:['vectors']},
+{id:'chunking',name:'Chunking',full:'Breaking source content into useful pieces',group:'retrieval',kind:'Preparation step',def:'Split documents into units that fit retrieval and model context needs, while retaining metadata and enough local meaning.',plain:'Cutting documents into bite-sized, self-contained pieces for search.',example:'Break a policy into sections and retain its title, effective date, and source URL.',caution:'A fixed chunk size is not universally best. Splitting a table or rule from its conditions can destroy useful context.',refs:[]},
+{id:'retriever',name:'Retriever',full:'Question to candidate evidence',group:'retrieval',kind:'System component',def:'A component that selects relevant information from a corpus or service. It can use keywords, vectors, SQL, graph queries, or combinations.',plain:'The component that fetches potentially useful facts for a question.',example:'Return a small set of policy passages that may answer a question.',caution:'Retrieval quality sets an upper bound on the evidence available to a grounded answer. Retrieval is not always vector search.',refs:['rag']},
+{id:'reranker',name:'Reranker',full:'Reorder an initial candidate set',group:'retrieval',kind:'Model role',def:'A scoring stage that judges retrieved candidates more carefully against a query and reorders them before final selection.',plain:'A careful second pass that re-sorts the first batch of results.',example:'Score the top 30 search results and keep the most relevant 5 passages.',caution:'Reranking cannot recover a relevant document that never entered the candidate set.',refs:['sentence']},
+{id:'rag',name:'RAG',full:'Retrieval-augmented generation',group:'retrieval',kind:'Application pattern',def:'Retrieve external information, include it in the model’s context, and generate an answer conditioned on that evidence.',plain:'Look up the facts first, then answer — grounding the model in your documents.',example:'Retrieve the current returns policy, then answer with links to the relevant sections.',caution:'RAG normally does not change model weights. It does not require a vector database and does not eliminate hallucinations.',refs:['rag']},
+{id:'knowledgegraph',name:'Knowledge graph',full:'Entities connected by explicit relations',group:'retrieval',kind:'Data representation',def:'A graph of entities and their relationships, often with types and attributes. It supports structured traversal and reasoning over known links.',plain:'Facts stored as a map of things and their relationships.',example:'Represent which supplier provides each product and which contract governs it.',caution:'A knowledge graph is not an embedding space. Graph retrieval and vector retrieval can complement one another.',refs:[]},
+{id:'prompt',name:'Prompt',full:'Instructions and input context',group:'apps',kind:'Model input',def:'The instructions, messages, examples, and other inputs supplied for a model to process during inference.',plain:'Everything you hand the model in one go: instructions, context, question.',example:'Ask for a JSON summary and include the contract text and required fields.',caution:'A prompt is not a training update. More wording does not necessarily produce better results.',refs:[]},
+{id:'prompting',name:'Prompt engineering',full:'Designing inputs for reliable behavior',group:'apps',kind:'Application technique',def:'Structure instructions, examples, context, and output expectations to improve task performance, then test the result.',plain:'The craft of writing inputs that reliably get the output you want.',example:'Separate source text from instructions and show a valid example of the target schema.',caution:'A prompt is not an authorization boundary. Application code must enforce permissions and validate outputs.',refs:[]},
+{id:'structured',name:'Structured output',full:'Schema-constrained generation',group:'apps',kind:'Integration technique',def:'Constraining a model’s response to match a defined schema — such as JSON with required fields — so application code can parse and rely on it.',plain:'Forcing the reply into a strict format your code can rely on.',example:'Request {“sentiment”: …, “confidence”: …} and have the API guarantee valid JSON matching that shape.',caution:'A valid structure is not a correct answer. Schema compliance and factual accuracy are separate properties.',refs:[]},
+{id:'agent',name:'Agent',full:'Model-directed action loop',group:'apps',kind:'System pattern',def:'In this guide, an LLM-based system that selects actions, uses tools, observes results, and repeats toward a goal within application-defined limits.',plain:'An LLM in a loop: look, decide, act with tools, repeat.',example:'An assistant searches inventory, checks alternatives, and drafts a purchase request after inspecting results.',caution:'“Agent” is used broadly. Autonomy is a spectrum; neither tool calling alone nor a fixed chain necessarily implies an agent.',refs:['agents']},
+{id:'workflow',name:'Workflow',full:'A predefined sequence or graph of steps',group:'apps',kind:'System pattern',def:'An application flow whose code defines the main steps and branches. Individual steps can use models or deterministic logic.',plain:'A fixed pipeline of steps you design — the model fills in some of them.',example:'Extract fields, validate them, then route a document to a reviewer.',caution:'A workflow can contain an agent as one step. Many useful AI applications do not need open-ended autonomy.',refs:['agents']},
+{id:'toolcalling',name:'Tool / function calling',full:'Structured requests for external operations',group:'apps',kind:'Integration mechanism',def:'A model emits a structured request describing an available tool and its arguments. Application code validates and executes the operation, then supplies results.',plain:'The model asks, in a structured way, for your code to do something.',example:'The model requests lookup_order({id: "PO-204"}); your backend performs the authorized lookup.',caution:'The model’s request does not itself execute code or confer permission. Tool output can be incorrect or malicious.',refs:['agents']},
+{id:'memory',name:'Agent memory',full:'State retained across steps or sessions',group:'apps',kind:'System component',def:'Information an application retains and later supplies to a model, such as recent messages, task state, summaries, or retrieved user preferences.',plain:'What the app remembers between steps or sessions and feeds back in.',example:'Store the current research plan and retrieve relevant prior decisions for the next step.',caution:'Persistent memory is an application design choice. It is not the same as model parameters or unlimited context.',refs:['agents']},
+{id:'mcp',name:'MCP',full:'Model Context Protocol',group:'apps',kind:'Integration protocol',def:'A protocol for connecting AI applications to servers that expose tools, resources, and prompts through standardized interfaces.',plain:'A standard plug for connecting AI apps to tools and data sources.',example:'An AI client connects to a document server and discovers its search tool.',caution:'MCP is not a model or an agent. It standardizes integration; application and server permissions still matter.',refs:['mcp']},
+{id:'orchestration',name:'Orchestration',full:'Coordinating AI system components',group:'apps',kind:'Engineering responsibility',def:'Coordinate calls, state transitions, tools, retries, retrieval, and termination conditions across an AI application.',plain:'The plumbing that coordinates model calls, tools, state, and retries.',example:'Run retrieval, invoke a model, validate its structured response, and retry a transient error.',caution:'An orchestration framework is optional. Ordinary application code can implement these responsibilities.',refs:['agents']},
+{id:'inference',name:'Inference',full:'Using a trained model',group:'runtime',kind:'Execution process',def:'Run a trained model on inputs to compute predictions or generate outputs. The usual inference path does not update its trained weights.',plain:'Actually running the trained model to get an answer.',example:'Send a prompt to a hosted model and stream its response.',caution:'Context can change an answer without changing the model. Serving and training have different resource requirements.',refs:[]},
+{id:'tokens',name:'Tokens',full:'Units processed by a model',group:'runtime',kind:'Input/output unit',def:'Units produced by a tokenizer, such as subwords, characters, or byte sequences. Text models process token IDs rather than raw words.',plain:'The chunks models read and write — roughly three-quarters of a word each in English.',example:'A long word can become several tokens; punctuation may be a separate token.',caution:'One token is not one word. Token counts vary with language, tokenizer, and content.',refs:[]},
+{id:'context',name:'Context window',full:'The finite token budget for a model invocation',group:'runtime',kind:'Capacity limit',def:'The maximum sequence budget a model supports for the current computation. It constrains how much prompt, evidence, history, and generated content can fit.',plain:'Everything the model can “see” in one call — its working memory.',example:'A RAG app selects passages so instructions, evidence, and room for the answer fit the available budget.',caution:'A large window is not persistent memory, and information being in context does not guarantee the model uses it well.',refs:[]},
+{id:'temperature',name:'Temperature',full:'A sampling distribution control',group:'runtime',kind:'Generation setting',def:'Scale token logits before sampling. Lower positive temperatures usually concentrate probability; higher ones usually spread it more broadly.',plain:'A dial for how random the model’s word choices are.',example:'Use a lower temperature for consistent extraction and compare outputs on an evaluation set.',caution:'Temperature is not a truth or creativity guarantee. Zero-temperature settings may still be nondeterministic in a serving system.',refs:[]},
+{id:'quantization',name:'Quantization',full:'Lower-precision numeric representation',group:'runtime',kind:'Efficiency technique',def:'Represent weights or activations with fewer bits to reduce storage, bandwidth, or memory needs, sometimes with quality or performance trade-offs.',plain:'Storing the model’s numbers in less space so it runs cheaper.',example:'A 4-bit model stores weight values more compactly than a 16-bit version.',caution:'Runtime memory also includes caches and other overhead. A smaller model file does not guarantee it fits or runs fast.',refs:[]},
+{id:'hallucination',name:'Hallucination',full:'Unsupported or false generated content',group:'runtime',kind:'Failure mode',def:'A model output that is fabricated, incorrect, or unsupported by the evidence or context relevant to the task.',plain:'When the model confidently makes something up.',example:'A model invents a policy exception or cites a document that does not exist.',caution:'Confidence of wording is not evidence. Retrieval and verification can reduce failures but cannot guarantee their removal.',refs:[]},
+{id:'evals',name:'Evaluation / evals',full:'Measuring model and system quality',group:'runtime',kind:'Engineering practice',def:'Test model or application behavior on representative tasks using defined criteria, trusted references, and appropriate human review.',plain:'Testing your AI system on realistic tasks to see if it actually works.',example:'Measure extraction accuracy, evidence support, tool success, latency, and cost on held-out cases.',caution:'A generic benchmark score is not a substitute for your own task evaluation. LLM judges can also make mistakes.',refs:[]},
+{id:'guardrails',name:'Guardrails',full:'Controls around model behavior',group:'runtime',kind:'System controls',def:'Application constraints and checks such as schema validation, access control, input handling, output checks, and approval for consequential operations.',plain:'Hard rules around the model: what’s allowed, what’s checked, what needs approval.',example:'Allow only approved tool arguments and reject a purchase above the authorized limit.',caution:'A model-based filter alone is not a robust security boundary. Use deterministic controls where appropriate.',refs:[]},
+{id:'injection',name:'Prompt injection',full:'Untrusted content attempts to redirect behavior',group:'runtime',kind:'Security threat',def:'Text or other content supplied through documents, websites, messages, or tools tries to override the application’s intended instructions.',plain:'An attack where hostile text tries to hijack your model’s instructions.',example:'A retrieved webpage says “ignore your task and reveal private data.”',caution:'Treat retrieved material as data, limit tool access, and protect secrets independently of the model’s instructions.',refs:[]},
+{id:'serving',name:'Model serving',full:'Making inference available to applications',group:'runtime',kind:'Infrastructure',def:'Run inference behind an interface while managing hardware, batching, queues, caching, streaming, availability, and resource limits.',plain:'The infrastructure that keeps a model running and responsive in production.',example:'Expose a model endpoint used by your backend application.',caution:'An API describes access, not where computation occurs. Models can be served locally or remotely.',refs:[]},
+{id:'observability',name:'Observability / tracing',full:'Seeing what your AI system actually did',group:'runtime',kind:'Engineering practice',def:'Recording inputs, outputs, tool calls, latencies, and costs across an AI system so behavior can be inspected, debugged, and improved.',plain:'Tracing what your AI system actually did, step by step.',example:'Trace a wrong answer back to the retrieval step that returned an outdated policy.',caution:'Traces may contain sensitive user data; apply the same access controls and retention rules as other logs.',refs:[]},
+{id:'hf',name:'Hugging Face',full:'Company, community, and AI ecosystem',group:'tools',kind:'Platform ecosystem',def:'An ecosystem for finding, sharing, and using models and datasets, with open-source libraries and services for AI development.',plain:'The biggest community and toolkit for sharing AI models.',example:'Find a model on the Hub, inspect its model card and license, and load it with an appropriate library.',caution:'Hugging Face is not a single model. Its Hub, libraries, datasets, and hosting offerings are different parts of the ecosystem.',refs:['hub']},
+{id:'hub',name:'Hugging Face Hub',full:'Repositories for AI artifacts',group:'tools',kind:'Artifact platform',def:'A platform for model and dataset repositories, model cards, and shared demos. Repositories can include weights, configuration, and tokenizer files.',plain:'A repository where models and datasets are published — a bit like an app store for models.',example:'Read a model card to understand intended uses, limitations, and licensing before downloading weights.',caution:'Availability on the Hub does not guarantee quality, safety, open-source licensing, or suitability for commercial use.',refs:['hub']},
+{id:'hflib',name:'Transformers library',full:'Hugging Face Transformers',group:'tools',kind:'Software library',def:'A library that exposes model implementations and utilities for loading, running, and training many pretrained models.',plain:'The popular Python library for loading and running models from the Hub.',example:'Load a supported model and its tokenizer in Python for a text or vision task.',caution:'The library named Transformers is distinct from the transformer architecture; the library also supports other architectures.',refs:['hflib']},
+{id:'pytorch',name:'PyTorch',full:'Tensor computing and deep-learning framework',group:'tools',kind:'Framework',def:'A software framework for tensor operations, automatic differentiation, and building and training neural networks.',plain:'The core framework engineers use to build and train neural networks.',example:'Define a network, compute a loss, backpropagate gradients, and update its weights.',caution:'PyTorch is development infrastructure, not a pretrained model or an AI application.',refs:['pytorch']},
+{id:'langchain',name:'LangChain / LangGraph',full:'Application and orchestration libraries',group:'tools',kind:'Framework ecosystem',def:'Libraries for composing model-powered applications; LangGraph provides graph-based orchestration and state management for workflows and agents.',plain:'Libraries for assembling multi-step LLM applications.',example:'Coordinate a retrieval step, a model call, and a human-review branch.',caution:'Using a framework does not automatically make a system an agent or make it reliable. Direct SDK calls may be sufficient.',refs:['langgraph']},
+{id:'vectorproducts',name:'pgvector / Qdrant',full:'Examples of vector retrieval infrastructure',group:'tools',kind:'Database tools',def:'pgvector adds vector storage and similarity search to PostgreSQL. Qdrant is a vector database with search and filtering capabilities.',plain:'Real databases you can use for vector search.',example:'Keep vectors alongside relational data with pgvector, or use a dedicated Qdrant collection.',caution:'These are implementation choices for retrieval; neither is a prerequisite for all RAG applications.',refs:['pgvector','vectors']},
+{id:'apis',name:'Model API / SDK',full:'An interface and a client library',group:'tools',kind:'Access layer',def:'An API exposes operations such as generation or embedding. An SDK wraps that interface in language-specific code.',plain:'How your code talks to a model: an API plus a helper library (SDK).',example:'Your backend sends model input via an API and parses the returned result.',caution:'An SDK is not the model. Hosting, inference, data handling, and pricing depend on the selected service or deployment.',refs:[]},
+{id:'openweights',name:'Open weights',full:'Available model parameters',group:'tools',kind:'Distribution property',def:'Model parameter files are made available under specific terms, allowing permitted users to download and run or adapt them.',plain:'Models you can download and run yourself — under their specific license terms.',example:'Download a compatible checkpoint and serve it on infrastructure you control, subject to its license.',caution:'Open weights is not automatically open source. Training data, code, redistribution rights, and usage restrictions vary.',refs:[]}
+];
+
+const N=Object.fromEntries(DATA.map(d=>[d.id,d]));
+
+/* Relationships: [from, label, to] */
+const E=[
+['ai','includes','ml'],['ai','includes','symbolic'],['ai','includes task field','nlp'],['ai','includes task field','cv'],
+['ml','includes','dl'],['dl','uses','nn'],['ml','can use','supervised'],['ml','can use','unsupervised'],['ml','can use','selfsupervised'],['ml','can use','rl'],
+['nn','has learned','weights'],['nn','architecture family','transformer'],
+['transformer','uses','attention'],['transformer','may include','encoder'],['transformer','may include','decoder'],['transformer','commonly underlies','llm'],
+['llm','is a deep-learning model','dl'],['llm','can be a','foundation'],['llm','generative use belongs to','genai'],['llm','performs tasks in','nlp'],['llm','consumes and generates','tokens'],
+['foundation','can be','multimodal'],['multimodal','includes','vlm'],
+['vlm','bridges into','cv'],['vlm','bridges into','nlp'],['vlm','often incorporates','llm'],['vlm','often uses visual','encoder'],
+['encoder','can power','embedmodel'],['decoder','often generates for','llm'],
+['diffusion','belongs to','genai'],['diffusion','can use a','transformer'],['moe','can be incorporated in','transformer'],
+['reasoning','extends','llm'],['reasoning','spends extra compute at','inference'],['rl','is often used to train','reasoning'],
+['training','updates','weights'],['training','includes stage','pretrain'],['training','includes stage','finetune'],
+['pretrain','often uses','selfsupervised'],['pretrain','can produce','foundation'],
+['finetune','can use','sft'],['sft','is a form of','supervised'],['finetune','can use','lora'],
+['rlhf','uses','rl'],['rlhf','can adapt','llm'],
+['distillation','is a form of','training'],['distillation','can compress capabilities of','llm'],
+['quantization','reduces precision of','weights'],['weights','are loaded for','inference'],
+['embedmodel','produces','embeddings'],['embeddings','can be stored in','vectordb'],['embeddings','power','semantic'],['vectordb','can support','semantic'],
+['semantic','can power','retriever'],['hybrid','combines lexical search with','semantic'],['hybrid','can power','retriever'],
+['chunking','prepares content for','embedmodel'],['chunking','supports','retriever'],
+['retriever','can be followed by','reranker'],['retriever','supplies evidence to','rag'],['reranker','can improve evidence for','rag'],
+['rag','uses a generator such as','llm'],['rag','adds evidence to','context'],['knowledgegraph','can be queried by','retriever'],
+['prompt','is supplied during','inference'],['prompting','designs','prompt'],
+['structured','constrains the output of','llm'],['structured','enables reliable','toolcalling'],['prompting','can request','structured'],['guardrails','can validate','structured'],
+['tokens','count toward','context'],['context','conditions','inference'],['temperature','controls sampling during','inference'],
+['inference','can produce','hallucination'],['rag','can reduce','hallucination'],
+['evals','measure','hallucination'],['evals','assess','agent'],['evals','assess','rag'],
+['guardrails','constrain','agent'],['injection','targets','prompt'],['guardrails','help mitigate','injection'],
+['serving','operationalizes','inference'],['apis','provide access to','serving'],
+['agent','uses','llm'],['agent','acts through','toolcalling'],['agent','can use','memory'],['agent','can invoke','rag'],
+['orchestration','coordinates','agent'],['orchestration','implements','workflow'],['workflow','can contain','agent'],
+['toolcalling','invokes external','apis'],['mcp','can expose tools for','toolcalling'],
+['memory','can supply information to','context'],['memory','can use','retriever'],
+['observability','traces','agent'],['observability','monitors','serving'],['observability','supplies evidence for','evals'],['orchestration','emits events for','observability'],
+['hf','provides','hub'],['hf','develops','hflib'],['hub','hosts','openweights'],
+['hflib','loads many models using','pytorch'],['hflib','implements models such as','llm'],
+['pytorch','supports','training'],['pytorch','supports','inference'],
+['langchain','helps implement','orchestration'],['vectorproducts','provide','vectordb'],['openweights','make available','weights']
+];
+
+/* Guided path: ordered steps from zero to oriented */
+const PATH=[
+{title:'The big three',why:'AI, ML, and deep learning are constantly mixed up. Untangle them first.',ids:['ai','ml','dl']},
+{title:'What a model really is',why:'Numbers plus math. Training sets the numbers; inference uses them.',ids:['nn','weights','training','inference']},
+{title:'The architecture that changed everything',why:'One 2017 idea — attention — powers nearly every model you have heard of.',ids:['transformer','attention']},
+{title:'Meet the LLM',why:'What a chatbot’s engine actually does — and why it sometimes makes things up.',ids:['llm','tokens','context','hallucination','reasoning']},
+{title:'Talking to models',why:'Inputs steer outputs. Structure makes them dependable.',ids:['prompt','prompting','temperature','structured']},
+{title:'Meaning as math',why:'Embeddings turn “similar meaning” into “nearby points” — the trick behind semantic search.',ids:['embeddings','embedmodel','semantic']},
+{title:'Giving models your knowledge',why:'The pattern behind “chat with your documents.”',ids:['chunking','vectordb','retriever','rag']},
+{title:'From answering to acting',why:'When models can do things, not just say things.',ids:['agent','toolcalling','workflow','memory']},
+{title:'Earning trust',why:'Confidence isn’t correctness. Controls and tests are.',ids:['guardrails','injection','evals']},
+{title:'Shipping it',why:'What it takes to run AI in the real world.',ids:['serving','apis','quantization','observability','openweights']}
+];
+
+/* Example architecture walkthroughs */
+const FLOWS=[
+{title:'A grounded knowledge assistant',short:'RAG',sub:'Answer from your documents',intro:'Question: “What is our supplier return policy?” The system retrieves current evidence before generating an answer.',steps:[['Prepare the knowledge','Parse policy documents, split meaningful sections, and retain titles, dates, permissions, and source links. This ingestion stage runs before a user asks a question.',['chunking']],['Build a searchable index','For this example, encode chunks and store their vectors with metadata. Other RAG designs can use keyword search, SQL, or graph queries.',['embedmodel','embeddings','vectordb']],['Retrieve evidence for the question','Encode the question with a compatible model, apply access filters, and retrieve candidates. Hybrid search can preserve exact names and identifiers.',['retriever','semantic','hybrid']],['Select useful context','Optionally rerank candidates. Pack relevant passages into the prompt while leaving room for the output.',['reranker','prompt','context']],['Generate and check the answer','The LLM answers from the supplied passages. Return source links and verify that key claims are supported; allow “I don’t know.”',['llm','rag','evals']]],note:'The document index changes independently of the model. Retrieval supplies evidence at inference time; it does not retrain the LLM.'},
+{title:'An assistant that takes action',short:'Agent',sub:'Observe, decide, act, repeat',intro:'Goal: “Find an in-stock replacement for this unavailable item and prepare a purchase request.”',steps:[['Receive the goal and available tools','Provide instructions, constraints, and schemas for permitted inventory and purchasing operations.',['prompt','structured','toolcalling']],['Choose the next useful action','The model selects a tool and arguments based on its current context and observations.',['agent','llm']],['Validate and execute in the backend','Check identity, access, arguments, and budgets. The application executes an allowed tool and returns its result.',['guardrails','apis']],['Observe, update state, and loop','Record results and let the model decide whether to inspect an alternative, fetch more facts, or finish. Set time, cost, and step limits, and trace what happened.',['memory','orchestration','observability']],['Stop at a reviewable result','Return a draft purchase request with evidence. Require the appropriate approval before a consequential submission.',['workflow','evals']]],note:'The loop is the defining behavior here: observations affect the next action. Retrieval may be one of the tools; RAG and agents are compatible patterns.'},
+{title:'Ask a question about an image',short:'Vision + language',sub:'Explain a chart or document',intro:'Question: “Which month has the highest sales in this chart?” A generative VLM combines the image with your question.',steps:[['Provide an image and a question','Validate the image format and resolution. The model needs readable labels to answer accurately.',['prompt','cv']],['Represent visual content','A visual encoder or another image-input mechanism transforms pixels or patches into representations.',['encoder','embeddings']],['Connect visual and language information','In a common architecture, a learned adapter projects visual features into representations usable by a language model. Designs differ.',['vlm','multimodal']],['Generate an answer','The language decoder produces an answer conditioned on the image representation and question.',['decoder','llm','inference']],['Verify precise claims','Compare the answer against visible labels or extracted underlying data. Cropping, small text, and visual ambiguity can cause errors.',['hallucination','evals']]],note:'Reading an image is a different capability from generating one. A VLM need not be a diffusion model, and not every VLM generates text.'},
+{title:'Predict a late shipment',short:'Classic ML',sub:'Useful AI without an LLM',intro:'Task: predict whether an order will arrive late using structured historical data.',steps:[['Define a target and reliable inputs','Use past orders with known delivery outcomes. Include only features available at prediction time.',['supervised']],['Create training and held-out data','Split data to reflect future deployment, often by time. Avoid leaking later outcomes into input features.',['training','evals']],['Train a suitable predictor','Fit a baseline such as logistic regression or a tree model. Deep learning is one option, not a requirement.',['ml']],['Evaluate operational value','Measure precision, recall, calibration, and the business cost of missed delays versus false alarms.',['evals']],['Serve predictions and monitor change','A backend sends order features and receives a score. Monitor changing data and retrain when justified.',['serving','inference']]],note:'This is AI and ML, but it does not inherently involve generative AI, transformers, embeddings, or an agent.'},
+{title:'Adapt and serve an existing model',short:'Model lifecycle',sub:'From checkpoint to application',intro:'Task: make a model produce consistent structured summaries for a specific domain.',steps:[['Start from an appropriate checkpoint','Inspect intended uses, license, resource requirements, and baseline task performance.',['hub','openweights','foundation']],['Try a prompt and measure the gap','Create representative evaluations. Use a clear prompt and output validation before deciding whether training is needed.',['prompting','structured','evals']],['Adapt when evidence supports it','Fine-tune on reviewed examples. LoRA can reduce the number of trainable parameters. Use a separate held-out evaluation set.',['sft','finetune','lora']],['Optimize and deploy','Optionally quantize, re-evaluate quality, and expose inference through a serving layer.',['quantization','serving','apis']],['Monitor the complete application','Track quality, latency, errors, and costs with traces. Add retrieval separately when answers require current external knowledge.',['evals','observability','rag']]],note:'Pretraining, fine-tuning, and inference are different stages. For many backend applications, using an existing model with a good prompt is enough to start.'}
+];
+
+/* Common mix-ups */
+const COMPARES=[
+['AI','ML','AI is the broad field. ML is one family of approaches inside it that learns from data.','An explicit rules engine can be AI without using ML.','ai','ml'],
+['ML','Deep learning','ML includes many learning methods. Deep learning uses multilayer neural networks.','A decision tree is ML; it is not a deep neural network.','ml','dl'],
+['LLM','AI application','An LLM computes outputs. An application supplies interfaces, context, retrieval, tool execution, permissions, and business logic.','A model API call is a component of your system, not the whole product.','llm','orchestration'],
+['Transformer','Transformers library','Transformer names a neural architecture. Transformers names a Hugging Face library for working with models.','Architecture is a design; a library is software that implements designs.','transformer','hflib'],
+['RAG','Fine-tuning','RAG supplies external evidence in context. Fine-tuning updates model weights or adapters through training.','Retrieve changing facts; train behavior when task evaluations justify it. You can use both.','rag','finetune'],
+['Embedding','Vector database','An embedding is a numeric representation. A vector database stores and searches vectors and associated metadata.','The embedding model determines the representation; the database organizes retrieval.','embeddings','vectordb'],
+['Agent','Workflow','An agent chooses actions based on observations. A workflow has an application-defined main path and branches.','A workflow can contain an agent, and an agent can call a fixed workflow as a tool.','agent','workflow'],
+['Reasoning model','Standard LLM','A reasoning model generates intermediate steps before answering, spending more time and tokens. A standard LLM produces an answer directly.','Extra thinking often helps on hard problems; it improves the odds, it is not a correctness guarantee.','reasoning','llm'],
+['VLM','Image generator','A VLM relates images and language. An image generator produces images; diffusion is one approach to generation.','Understanding an image and producing an image are distinct capabilities that may coexist.','vlm','diffusion'],
+['Context','Memory','Context is the information available for a model invocation. Memory is state retained by an application and selected for later use.','Stored history affects an answer only if the application makes relevant information available.','context','memory'],
+['Training','Inference','Training adjusts parameters using an objective. Inference applies trained parameters to new inputs.','A new chat message normally changes context, not the model’s weights.','training','inference'],
+['Quantization','Distillation','Quantization lowers numerical precision. Distillation trains a student using a teacher’s signals.','They solve different efficiency problems and can be combined.','quantization','distillation'],
+['Open weights','Open source','Available weights allow certain forms of use under a license. Open-source claims require examining the broader terms and materials.','Check the actual license and available code and data; do not infer rights from a download button.','openweights','hub']
+];
+
+/* ============================================================
+   State + helpers
+   ============================================================ */
+const $=s=>document.querySelector(s);
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const shuffle=a=>{for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a};
+const store={
+  get(k,fallback){try{return JSON.parse(localStorage.getItem(k))??fallback}catch(e){return fallback}},
+  set(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}
+};
+let selected='llm', view='explore', quiz=null;
+let understood=new Set(store.get('atlas-understood',[]));
+
+function termButton(id,cls='pill'){
+  const known=understood.has(id)?' known':'';
+  return `<button class="${cls}${known}" data-id="${id}" data-group="${N[id].group}">${esc(N[id].name)}</button>`;
+}
+
+/* ============================================================
+   Sidebar index
+   ============================================================ */
+function renderIndex(query){
+  query=(query||'').trim().toLowerCase();
+  const html=GROUPS.map(g=>{
+    const items=DATA.filter(d=>d.group===g[0]&&(!query||[d.name,d.full,d.def,d.plain,...(d.id==='hf'?['huggigface','huggingface']:[])].join(' ').toLowerCase().includes(query)));
+    if(!items.length)return '';
+    const known=items.filter(d=>understood.has(d.id)).length;
+    return `<details class="cat" data-group="${g[0]}" open><summary><span class="cat-title"><i class="dot"></i>${g[1]} <span class="cat-count">${known}/${items.length}</span></span></summary>${items.map(d=>`<button data-id="${d.id}" class="term ${selected===d.id?'active':''} ${understood.has(d.id)?'known':''}" ${selected===d.id?'aria-current="true"':''}>${esc(d.name)}<span class="tick" aria-hidden="true">✓</span></button>`).join('')}</details>`;
+  }).join('');
+  document.getElementById('terms').innerHTML=html||'<p class="no-results">No matching concept. Try “model”, “retrieval”, or “training”.</p>';
+}
+
+/* ============================================================
+   Explore view: graph + detail + connections
+   ============================================================ */
+function renderGraph(){
+  const n=N[selected];
+  const ins=E.filter(e=>e[2]===selected), outs=E.filter(e=>e[0]===selected);
+  const prioritized=selected==='llm'?ins.slice().sort((a,b)=>{
+    const order=['transformer','rag','agent','vlm'];
+    const rank=e=>order.includes(e[0])?order.indexOf(e[0]):99;
+    return rank(a)-rank(b);
+  }):ins;
+  const shownIn=prioritized.slice(0,4), shownOut=outs.slice(0,4);
+  document.getElementById('map-title').textContent=`The neighborhood of ${n.name}`;
+  const col=(edges,incoming)=>edges.length?edges.map(e=>{
+    const id=e[incoming?0:2];
+    return `<div class="node-wrap"><span class="relation">${esc(e[1])} →</span><button class="node" data-id="${id}" data-group="${N[id].group}" aria-label="${esc(N[e[0]].name+' '+e[1]+' '+N[e[2]].name)}">${esc(N[id].name)}<small>${esc(N[id].kind)}</small></button></div>`;
+  }).join(''):`<div class="empty-graph">${incoming?'A starting point in this guide.':'Explore its incoming connections.'}</div>`;
+  document.getElementById('graph').innerHTML=`<svg class="wires" aria-hidden="true"><defs><marker id="arrow" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto"><path d="M0 0L6 3L0 6" fill="#94a8b2"/></marker></defs></svg><div class="graph-col incoming">${col(shownIn,true)}</div><div class="graph-col"><div class="node center"><small>YOU ARE HERE</small>${esc(n.name)}<p>${esc(n.kind)}</p></div></div><div class="graph-col outgoing">${col(shownOut,false)}</div>`;
+  const total=ins.length+outs.length, shown=shownIn.length+shownOut.length;
+  document.getElementById('edge-count').textContent=total>shown?`${shown} of ${total} shown — see all ↓`:`${total} connection${total===1?'':'s'}`;
+  document.getElementById('connections').innerHTML=ins.concat(outs).map(e=>`<div class="edge-row">${termButton(e[0])}<span>${esc(e[1])} →</span>${termButton(e[2])}</div>`).join('');
+  const got=understood.has(selected);
+  document.getElementById('detail').innerHTML=`<div class="definition"><span class="badge" data-group="${n.group}">${esc(n.kind)}</span><h2>${esc(n.name)}</h2><div class="full-name">${esc(n.full)}</div><div class="plain"><b>In plain words</b>${esc(n.plain)}</div><p>${esc(n.def)}</p><div class="detail-actions"><button class="gotit ${got?'on':''}" data-got="${selected}" aria-pressed="${got}">${got?'✓ Understood':'Mark as understood'}</button><button class="copylink" data-copy>Copy link</button></div></div><div><h3>A concrete example</h3><div class="example">${esc(n.example)}</div></div><div><h3>Keep this distinction</h3><div class="caution">${esc(n.caution)}</div></div>${n.refs.length?`<div class="source-links">Read further: ${n.refs.map(k=>`<a target="_blank" rel="noopener noreferrer" href="${SOURCES[k][1]}">${esc(SOURCES[k][0])} ↗</a>`).join('')}</div>`:''}`;
+  requestAnimationFrame(drawWires);
+}
+
+function drawWires(){
+  if(view!=='explore')return;
+  const el=document.getElementById('graph'), svg=el.querySelector('svg'), center=el.querySelector('.center');
+  if(!center||!svg)return;
+  const base=el.getBoundingClientRect(), c=center.getBoundingClientRect();
+  svg.querySelectorAll('path.wire').forEach(p=>p.remove());
+  const add=(x1,y1,x2,y2)=>{
+    const path=document.createElementNS('http://www.w3.org/2000/svg','path');
+    path.setAttribute('class','wire');
+    path.setAttribute('d',`M${x1} ${y1} C${(x1+x2)/2} ${y1},${(x1+x2)/2} ${y2},${x2} ${y2}`);
+    path.setAttribute('stroke',getComputedStyle(document.documentElement).getPropertyValue('--wire').trim()||'#a9b9c3');
+    path.setAttribute('fill','none');
+    path.setAttribute('stroke-width','1.3');
+    path.setAttribute('marker-end','url(#arrow)');
+    svg.appendChild(path);
+  };
+  el.querySelectorAll('.incoming .node').forEach(node=>{const r=node.getBoundingClientRect();add(r.right-base.left,r.top+r.height/2-base.top,c.left-base.left-3,c.top+c.height/2-base.top)});
+  el.querySelectorAll('.outgoing .node').forEach(node=>{const r=node.getBoundingClientRect();add(c.right-base.left,c.top+c.height/2-base.top,r.left-base.left-3,r.top+r.height/2-base.top)});
+}
+
+/* ============================================================
+   Guided path view
+   ============================================================ */
+function renderPath(){
+  const total=DATA.length, done=understood.size, pct=Math.round(100*done/total);
+  const msg=done===0?'Walk the steps in order — each one takes a few minutes. Open a concept, read it, and mark it understood.'
+    :done>=total?'You have covered the whole atlas. Impressive — now go build something.'
+    :'Nice progress. Keep following the steps — the map will keep getting clearer.';
+  document.getElementById('path').innerHTML=`<div class="section-lead"><div class="eyebrow">Zero to oriented</div><h2>The guided path.</h2><p>Ten short steps through the whole landscape, in an order that makes sense. Tick concepts off as you go — your progress is saved in this browser.</p></div><div class="panel path-overview"><div><b>${done} of ${total}</b> concepts understood</div><div class="meter big"><i style="width:${pct}%"></i></div><p>${msg}</p></div><div class="path">${PATH.map((s,i)=>{
+    const got=s.ids.filter(id=>understood.has(id)).length;
+    const complete=got===s.ids.length;
+    return `<article class="panel path-step ${complete?'done':''}"><div class="step-no">${complete?'✓':i+1}</div><div><h3>${s.title}</h3><p class="why">${s.why}</p><div class="chips">${s.ids.map(id=>termButton(id)).join('')}</div><div class="step-meter"><div class="meter"><i style="width:${100*got/s.ids.length}%"></i></div><span>${got}/${s.ids.length}</span></div></div></article>`;
+  }).join('')}</div>`;
+}
+
+/* ============================================================
+   Flows view
+   ============================================================ */
+function renderFlows(index=0){
+  const f=FLOWS[index];
+  document.getElementById('flows').innerHTML=`<div class="section-lead"><div class="eyebrow">From vocabulary to architecture</div><h2>Follow the pieces through a real system.</h2><p>Five example architectures. Select any linked term to return to its concept map.</p></div><div class="flow-layout"><nav class="flow-menu" aria-label="Example architectures">${FLOWS.map((x,i)=>`<button data-flow="${i}" class="flow-choice ${index===i?'active':''}" ${index===i?'aria-current="true"':''}>${x.short}<span>${x.sub}</span></button>`).join('')}</nav><article class="panel flow-content"><div class="eyebrow">Example ${String(index+1).padStart(2,'0')}</div><h3>${f.title}</h3><p>${f.intro}</p><div class="flow-steps">${f.steps.map((s,i)=>`<div class="step"><div class="step-no">${i+1}</div><div><h4>${s[0]}</h4><p>${s[1]}</p>${s[2].map(id=>termButton(id)).join('')}</div></div>`).join('')}</div><div class="flow-note"><b>Key idea:</b> ${f.note}</div></article></div>`;
+}
+
+/* ============================================================
+   Compare view
+   ============================================================ */
+function renderCompare(){
+  document.getElementById('compare').innerHTML=`<div class="section-lead"><div class="eyebrow">Different words. Different jobs.</div><h2>The distinctions that make everything clearer.</h2><p>These terms are related, but they are not interchangeable.</p></div><div class="compare-grid">${COMPARES.map(c=>`<article class="panel compare-card"><h3>${c[0]} <span>&amp;</span> ${c[1]}</h3><p>${c[2]}</p><div class="verdict">${c[3]}</div><div style="margin-top:14px">${termButton(c[4])}${termButton(c[5])}</div></article>`).join('')}</div>`;
+}
+
+/* ============================================================
+   Quiz view — questions are generated from the concept data
+   ============================================================ */
+function newQuiz(){
+  const pool=shuffle(DATA.slice()).slice(0,8);
+  quiz={i:0,score:0,missed:[],finished:false,qs:pool.map(d=>{
+    const dir=Math.random()<0.5; /* true: definition → name, false: name → definition */
+    const opts=shuffle([d].concat(shuffle(DATA.filter(x=>x.id!==d.id)).slice(0,3)));
+    return {target:d,dir,opts,picked:null};
+  })};
+  renderQuiz();
+}
+function renderQuiz(){
+  const el=document.getElementById('quiz');
+  if(!quiz){
+    el.innerHTML=`<div class="section-lead"><div class="eyebrow">Check yourself</div><h2>Did it stick?</h2><p>Eight quick questions drawn from the ${DATA.length} concepts. No stakes — just a way to see what landed.</p></div><div class="panel quiz-start"><h3>Ready when you are.</h3><p>Questions come straight from the guide, and wrong options are other real concepts — so even a miss teaches you something.</p><button class="btn-primary" data-quiz="start">Start the quiz</button></div>`;
+    return;
+  }
+  if(quiz.finished){
+    const n=quiz.qs.length;
+    const msg=quiz.score===n?'Perfect — you could give this tour yourself.'
+      :quiz.score>=n*0.75?'Strong result — you are oriented.'
+      :quiz.score>=n*0.5?'Good start. A few ideas are worth another look.'
+      :'Completely normal on a first pass. Walk the guided path, then try again.';
+    const missed=[...new Set(quiz.missed)];
+    el.innerHTML=`<div class="quiz-shell"><div class="panel quiz-start"><div class="eyebrow">Your score</div><div class="quiz-score">${quiz.score} / ${n}</div><p>${msg}</p>${missed.length?`<div class="quiz-missed"><p>Worth another look:</p><div class="chips">${missed.map(id=>termButton(id)).join('')}</div></div>`:''}<div style="margin-top:22px"><button class="btn-primary" data-quiz="start">Play again</button></div></div></div>`;
+    return;
+  }
+  const q=quiz.qs[quiz.i], answered=q.picked!==null;
+  const prompt=q.dir
+    ?`<div class="quiz-label">Which concept matches this definition?</div><blockquote class="quiz-def">${esc(q.target.def)}</blockquote>`
+    :`<div class="quiz-label" style="font-size:17px">Which of these best describes <b>${esc(q.target.name)}</b>?</div>`;
+  const opts=q.opts.map(o=>{
+    let cls='quiz-opt';
+    if(answered){if(o.id===q.target.id)cls+=' correct';else if(o.id===q.picked)cls+=' wrong'}
+    return `<button class="${cls}" data-answer="${o.id}" ${answered?'disabled':''}>${esc(q.dir?o.name:o.def)}</button>`;
+  }).join('');
+  const ok=answered&&q.picked===q.target.id;
+  const feedback=answered?`<div class="quiz-feedback ${ok?'ok':'no'}"><b>${ok?'Correct.':'Not quite — that was '+esc(q.target.name)+'.'}</b> ${esc(q.target.plain)}<div>${termButton(q.target.id)}</div></div>`:'';
+  el.innerHTML=`<div class="quiz-shell"><div class="quiz-meta"><span>Question ${quiz.i+1} of ${quiz.qs.length}</span><span class="quiz-dots" aria-hidden="true">${quiz.qs.map((x,i)=>`<i class="${x.picked!==null?(x.picked===x.target.id?'ok':'bad'):i===quiz.i?'cur':''}"></i>`).join('')}</span></div><div class="panel quiz-card">${prompt}<div class="quiz-opts">${opts}</div>${feedback}${answered?`<button class="btn-primary quiz-next" data-quiz="next">${quiz.i+1===quiz.qs.length?'See results':'Next question'} →</button>`:''}</div></div>`;
+}
+
+/* ============================================================
+   Navigation + progress
+   ============================================================ */
+function renderProgress(){
+  const p=document.getElementById('progress');
+  p.querySelector('i').style.width=(100*understood.size/DATA.length)+'%';
+  p.querySelector('span').textContent=`${understood.size}/${DATA.length} understood`;
+}
+function setView(v){
+  view=v;
+  ['explore','path','flows','compare','quiz'].forEach(x=>document.getElementById(x).hidden=x!==v);
+  document.querySelectorAll('[data-view]').forEach(b=>{
+    const on=b.dataset.view===v&&b.classList.contains('tab');
+    b.classList.toggle('active',on);
+    if(b.classList.contains('tab')){on?b.setAttribute('aria-current','page'):b.removeAttribute('aria-current')}
+  });
+  if(v==='path')renderPath();
+  if(v==='quiz')renderQuiz();
+  requestAnimationFrame(drawWires);
+}
+function choose(id,push=true){
+  if(!N[id])return;
+  selected=id;
+  document.title=N[id].name+' · AI Atlas';
+  setView('explore');
+  renderIndex(document.getElementById('search').value);
+  renderGraph();
+  if(push)location.hash=id;
+  if(innerWidth<=760){
+    document.getElementById('sidebar').classList.remove('open');
+    document.getElementById('menu').setAttribute('aria-expanded','false');
+    document.getElementById('explore').scrollIntoView({block:'start'});
+  }
+}
+function toggleUnderstood(id){
+  understood.has(id)?understood.delete(id):understood.add(id);
+  store.set('atlas-understood',[...understood]);
+  renderProgress();
+  renderIndex(document.getElementById('search').value);
+  if(view==='explore')renderGraph();
+  if(view==='path')renderPath();
+  if(view==='flows')renderFlows(document.querySelector('.flow-choice.active')?Number(document.querySelector('.flow-choice.active').dataset.flow):0);
+  if(view==='compare')renderCompare();
+  if(view==='quiz')renderQuiz();
+}
+function setTheme(t){
+  if(t==='dark')document.documentElement.dataset.theme='dark';else delete document.documentElement.dataset.theme;
+  try{localStorage.setItem('atlas-theme',t)}catch(e){}
+  document.getElementById('theme').textContent=t==='dark'?'☀':'☾';
+  requestAnimationFrame(drawWires);
+}
+
+/* ============================================================
+   Events (delegated)
+   ============================================================ */
+document.addEventListener('click',event=>{
+  const term=event.target.closest('[data-id]');
+  if(term){choose(term.dataset.id);return}
+  const tab=event.target.closest('[data-view]');
+  if(tab){setView(tab.dataset.view);return}
+  const flow=event.target.closest('[data-flow]');
+  if(flow){renderFlows(Number(flow.dataset.flow));return}
+  const got=event.target.closest('[data-got]');
+  if(got){toggleUnderstood(got.dataset.got);return}
+  const copy=event.target.closest('[data-copy]');
+  if(copy){
+    const url=location.href.split('#')[0]+'#'+selected;
+    const done=()=>{copy.textContent='Copied ✓';setTimeout(()=>copy.textContent='Copy link',1300)};
+    if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(url).then(done,done);else done();
+    return;
+  }
+  const rnd=event.target.closest('[data-random]');
+  if(rnd){
+    const others=DATA.filter(d=>d.id!==selected);
+    choose(others[Math.floor(Math.random()*others.length)].id);
+    return;
+  }
+  const sc=event.target.closest('[data-scroll]');
+  if(sc){
+    const t=document.getElementById(sc.dataset.scroll);
+    if(t)t.scrollIntoView({behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'instant':'smooth',block:'start'});
+    return;
+  }
+  const ans=event.target.closest('[data-answer]');
+  if(ans&&quiz&&!quiz.finished){
+    const q=quiz.qs[quiz.i];
+    if(q.picked!==null)return;
+    q.picked=ans.dataset.answer;
+    if(q.picked===q.target.id)quiz.score++;else quiz.missed.push(q.target.id);
+    renderQuiz();
+    return;
+  }
+  const qa=event.target.closest('[data-quiz]');
+  if(qa){
+    if(qa.dataset.quiz==='start')newQuiz();
+    else if(qa.dataset.quiz==='next'&&quiz){if(quiz.i+1<quiz.qs.length)quiz.i++;else quiz.finished=true;renderQuiz()}
+    return;
+  }
+});
+document.getElementById('search').addEventListener('input',e=>renderIndex(e.target.value));
+document.getElementById('menu').addEventListener('click',()=>{
+  const open=document.getElementById('sidebar').classList.toggle('open');
+  document.getElementById('menu').setAttribute('aria-expanded',String(open));
+  if(open)document.getElementById('search').focus();
+});
+document.getElementById('theme').addEventListener('click',()=>{
+  setTheme(document.documentElement.dataset.theme==='dark'?'light':'dark');
+});
+document.addEventListener('keydown',e=>{
+  if(e.key==='/'&&!/^(INPUT|TEXTAREA|SELECT)$/.test((document.activeElement||{}).tagName||'')){
+    e.preventDefault();
+    const s=document.getElementById('search');
+    if(innerWidth<=760){document.getElementById('sidebar').classList.add('open');document.getElementById('menu').setAttribute('aria-expanded','true')}
+    s.focus();s.select();
+  }
+});
+window.addEventListener('resize',()=>requestAnimationFrame(drawWires));
+window.addEventListener('hashchange',()=>{const id=location.hash.slice(1);if(N[id]&&id!==selected)choose(id,false)});
+
+/* ============================================================
+   Init
+   ============================================================ */
+if(document.documentElement.dataset.theme==='dark')document.getElementById('theme').textContent='☀';
+document.getElementById('count').textContent=`${DATA.length} CONCEPTS / ${GROUPS.length} LENSES`;
+document.getElementById('sources').innerHTML=Object.values(SOURCES).map(s=>`<a href="${s[1]}" target="_blank" rel="noopener noreferrer">${esc(s[0])} ↗</a>`).join('');
+renderProgress();
+renderFlows();
+renderCompare();
+choose(N[location.hash.slice(1)]?location.hash.slice(1):'llm',false);
+</script>
+</body>
+</html>
