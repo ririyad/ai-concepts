@@ -67,8 +67,10 @@ body,.panel,.map-card,.detail,.node,.term,.tab,.flow-choice,aside,header,.quiz-o
 
 /* ---------- Header ---------- */
 header{height:70px;background:var(--dark);color:#fff;display:flex;align-items:center;justify-content:space-between;padding:0 32px;gap:18px}
-.brand{display:flex;align-items:center;gap:12px;font-weight:750;font-size:22px;letter-spacing:-.8px}
-.mark{width:34px;height:34px;border:1px solid var(--accent);border-radius:50%;display:grid;place-items:center;color:var(--accent);font-size:18px;flex-shrink:0}
+.brand{display:flex;align-items:center;gap:12px;font-weight:750;font-size:22px;letter-spacing:-.8px;color:#fff;background:transparent;padding:0;border-radius:8px;cursor:pointer}
+.brand:hover .mark{background:color-mix(in srgb,var(--accent) 18%,transparent)}
+.brand:focus-visible{outline:2px solid var(--focus);outline-offset:4px}
+.mark{width:34px;height:34px;border:1px solid var(--accent);border-radius:50%;display:grid;place-items:center;color:var(--accent);font-size:18px;flex-shrink:0;transition:background-color .2s}
 .brand span:last-child{font-weight:400;color:#acc1cb}
 .edition{font:12px ui-monospace,SFMono-Regular,Menlo,monospace;color:#b8c9d1;letter-spacing:1.5px;margin-right:auto}
 .header-tools{display:flex;align-items:center;gap:12px}
@@ -360,7 +362,7 @@ noscript{display:block;padding:20px;text-align:center;font-weight:650}
 <a class="skip" href="#main">Skip to content</a>
 
 <header>
-  <div class="brand"><div class="mark" aria-hidden="true">A</div>AI ATLAS <span>/</span></div>
+  <button type="button" class="brand" data-home aria-label="AI Atlas home — open the default concept map"><div class="mark" aria-hidden="true">A</div>AI ATLAS <span>/</span></button>
   <div class="edition">A FIELD GUIDE TO CONNECTED IDEAS</div>
   <div class="header-tools">
     <div class="progress" id="progress" role="status" aria-live="polite" title="Concepts you have marked as understood">
@@ -921,6 +923,13 @@ function setTheme(t){
    Events (delegated)
    ============================================================ */
 document.addEventListener('click',event=>{
+  const home=event.target.closest('[data-home]');
+  if(home){
+    document.getElementById('search').value='';
+    choose('llm');
+    window.scrollTo({top:0,behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'instant':'smooth'});
+    return;
+  }
   const term=event.target.closest('[data-id]');
   if(term){choose(term.dataset.id);return}
   const tab=event.target.closest('[data-view]');
