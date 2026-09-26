@@ -1,6 +1,6 @@
 # AI Atlas
 
-A single-page field guide to **AI development terminology** — what each term means, how nearby concepts differ, and a course or paper that actually covers it.
+A single-page, plain-language field guide to **AI terminology** — 105 concepts from “what is a model?” to inference, RAG, agents, and skills. Each term explains what it means in everyday words, how it connects to the others, how nearby terms differ, and links a course, paper, or official guide that actually covers it.
 
 **Live site:** [https://ririyad.github.io/ai-concepts/](https://ririyad.github.io/ai-concepts/)
 
@@ -16,13 +16,19 @@ Then visit `http://localhost:8080`.
 
 ## What’s inside
 
-- **Concept map** — neighborhood graph for each term (left → right relationships), with plain/full reading depth, definitions, examples, and aligned reading links
-- **Guided path** — a structured walk through the glossary, with a Beginner set filter in the index
-- **In practice** — short system walkthroughs (e.g. RAG) with linked terms
-- **Common mix-ups** — pairs people often conflate
-- **Check yourself** — a lightweight self-quiz
+- **Start here** — a landing page for newcomers: look up a word you heard, a 60-second primer (“AI in five ideas”), and three ways in
+- **A–Z glossary** — every term with a one-line explanation, filterable by level (Essential · Good to know · Deep dive) and jumpable by letter
+- **Concept map** — neighborhood graph for each term (left → right relationships). Every entry is layered: plain words, an analogy, an everyday example, and why it matters first; switch to *In depth* for the precise definition, a real-system example, a distinction worth keeping, and aligned reading. Mentions of other terms are linked, with a hover preview
+- **Guided path** — 14 short steps through the essentials, plus deep dives grouped by topic
+- **In practice** — eight walkthroughs, from what happens when you chat with AI to how a coding agent uses skills and tools
+- **Mix-ups** — 27 pairs people often conflate (model vs chatbot, skill vs tool, jailbreak vs prompt injection…)
+- **Quiz** — an essentials quiz in plain words, or a full quiz across every concept
 
-Progress (“understood” marks), theme, and reading depth stay in your browser only. Self-hosted fonts live under `assets/fonts/`. No build step, no backend, no live model calls.
+Search understands everyday words and product names (“ChatGPT”, “run AI on my laptop”, “what is a skill”). Views and concepts have shareable links (`#glossary`, `#inference`). Progress (“understood” marks), theme, and reading depth stay in your browser only. Self-hosted fonts live under `assets/fonts/`. No build step, no backend, no live model calls.
+
+## Editing the content
+
+Everything lives in `index.html`. Inside the `<script>`: `DATA` holds one concept per line (plain-language layer, technical layer, level, aliases, search keywords, and `refs` into `SOURCES`); `E` holds the relationship edges; `PATH`, `FLOWS`, `COMPARES`, and `IDEAS` drive the guided path, walkthroughs, mix-ups, and primer; `XREF` lists the phrases that become inline links to a concept.
 
 ## Publishing
 
